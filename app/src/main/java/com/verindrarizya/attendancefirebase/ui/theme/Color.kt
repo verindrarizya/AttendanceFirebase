@@ -14,3 +14,6 @@ val ButtonTextDarkBlueGrayish = Color(0xFF414B5A)
 
 val PagerIndicatorActive = Color(0xFF7E91AA)
 val PagerIndicatorInactive = Color(0xFFDDE1E6)
+
+val TextGray = Color(0xFF77869E)
+val TextDarkBlue = Color(0xFF042C5C)

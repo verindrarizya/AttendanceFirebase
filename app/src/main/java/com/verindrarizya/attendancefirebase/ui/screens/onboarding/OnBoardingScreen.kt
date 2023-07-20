@@ -2,6 +2,9 @@
 
 package com.verindrarizya.attendancefirebase.ui.screens.onboarding
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -29,7 +32,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,7 +48,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.verindrarizya.attendancefirebase.R
@@ -48,8 +55,12 @@ import com.verindrarizya.attendancefirebase.ui.screens.Destination
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgBlue
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextGray
+import com.verindrarizya.attendancefirebase.ui.theme.MontserratFamily
 import com.verindrarizya.attendancefirebase.ui.theme.PagerIndicatorActive
 import com.verindrarizya.attendancefirebase.ui.theme.PagerIndicatorInactive
+import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
+import com.verindrarizya.attendancefirebase.ui.theme.TextGray
+import kotlinx.coroutines.delay
 
 object OnBoardingDestination : Destination {
     override val routeName: String = "OnBoardingDestination"
@@ -64,6 +75,24 @@ fun OnBoardingScreen(
 ) {
     val pageCount = remember { onBoardingPagerItemContentContents.size }
     val pagerState = rememberPagerState()
+    var flagAnimate by rememberSaveable { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        if (flagAnimate) {
+            for (i in 0 until pageCount) {
+                delay(1_500)
+                pagerState.animateScrollToPage(
+                    page = i,
+                    animationSpec = tween(
+                        durationMillis = 500,
+                        easing = FastOutSlowInEasing
+                    )
+                )
+            }
+
+            flagAnimate = false
+        }
+    }
 
     Column(
         modifier = modifier
@@ -76,6 +105,10 @@ fun OnBoardingScreen(
                 .padding(horizontal = 16.dp),
             text = "${pagerState.currentPage + 1}/$pageCount",
             textAlign = TextAlign.End,
+            fontFamily = MontserratFamily,
+            fontWeight = FontWeight.SemiBold,
+            color = TextGray,
+            fontSize = 13.sp
         )
         Spacer(Modifier.height(16.dp))
         HorizontalPager(
@@ -97,13 +130,13 @@ fun OnBoardingScreen(
             pageCount = pageCount,
             pagerState = pagerState,
         )
-        Spacer(Modifier.height(50.dp))
+        Spacer(Modifier.height(40.dp))
         BottomAuthButton(
             modifier = Modifier.padding(horizontal = 16.dp),
             onButtonSignUpClicked = onButtonSignUpClicked,
             onButtonLoginClicked = onButtonLoginClicked
         )
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(24.dp))
     }
 }
 
@@ -129,8 +162,9 @@ fun OnBoardingPagerItem(
             text = stringResource(onBoardingPagerItemContent.descriptionRes),
             fontSize = 20.sp,
             textAlign = TextAlign.Center,
-            lineHeight = 32.sp,
-            fontWeight = FontWeight.SemiBold
+            lineHeight = 26.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = TextDarkBlue
         )
     }
 }
@@ -159,8 +193,16 @@ fun PagerIndicatorItem(
     modifier: Modifier = Modifier,
     isSelected: Boolean,
     color: Color = if (isSelected) PagerIndicatorActive else PagerIndicatorInactive,
-    size: Dp = if (isSelected) 10.dp else 6.dp
 ) {
+
+    val size by animateDpAsState(
+        targetValue = if (isSelected) 10.dp else 6.dp,
+        animationSpec = tween(
+            durationMillis = 300,
+            easing = FastOutSlowInEasing
+        )
+    )
+
     Box(
         modifier = modifier
             .padding(3.dp)
