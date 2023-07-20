@@ -3,7 +3,7 @@
 
     <style name="Theme.AttendanceFirebase" parent="android:Theme.Material.Light.NoActionBar" />
 
-    <style name="Theme.AttendanceFirebase.Starting" parent="Theme.SplashScreen" >
+    <style name="Theme.AttendanceFirebase.Starting" parent="Theme.SplashScreen">
 
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_screen</item>
 
