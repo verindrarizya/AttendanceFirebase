@@ -250,7 +250,7 @@ fun BottomAuthButton(
             )
         ) {
             Text(
-                text = stringResource(id = R.string.sign_up)
+                text = stringResource(id = R.string.register)
             )
         }
     }
