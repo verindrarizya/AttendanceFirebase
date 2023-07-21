@@ -1,7 +1,8 @@
-package com.verindrarizya.attendancefirebase.ui.composables.template
+package com.verindrarizya.attendancefirebase.ui.composables.widget
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.TextGrayDarkish
@@ -33,10 +35,12 @@ fun OutlinedTextFieldOutsideLabel(
         Text(
             text = label,
             color = TextGrayDarkish,
-            fontWeight = FontWeight.Medium
+            fontWeight = FontWeight.Medium,
+            fontSize = 13.sp
         )
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
             value = textFieldValue,
             onValueChange = onTextFieldValueChange,
             singleLine = true,

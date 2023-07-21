@@ -3,11 +3,13 @@ package com.verindrarizya.attendancefirebase.ui.composables.template
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -30,55 +32,61 @@ fun AuthTemplate(
     screenDescription: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .paint(
-                painter = painterResource(R.drawable.bg_auth),
-                contentScale = ContentScale.FillBounds
-            )
-            .padding(horizontal = 10.dp)
-            .fillMaxSize()
-    ) {
-        Spacer(Modifier.height(20.dp))
-        Column(
-            modifier = Modifier.padding(
-                horizontal = 20.dp,
-                vertical = 30.dp
-            )
-        ) {
-            Text(
-                text = screenTitle,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Whiteish
-            )
-            Spacer(Modifier.height(18.dp))
-            Text(
-                text = screenDescription,
-                fontSize = 15.sp,
-                color = Whiteish
-            )
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxSize()
-                .background(
-                    color = Whiteish,
-                    shape = RoundedCornerShape(
-                        topStart = 16.dp,
-                        topEnd = 16.dp
+    Scaffold(
+        modifier = modifier,
+        content = { paddingValues: PaddingValues ->
+            Column(
+                modifier = Modifier
+                    .paint(
+                        painter = painterResource(R.drawable.bg_auth),
+                        contentScale = ContentScale.FillBounds
                     )
-                )
-                .padding(
-                    top = 16.dp,
-                    start = 32.dp,
-                    end = 32.dp
-                )
-        ) {
-            content()
+                    .padding(paddingValues)
+                    .padding(horizontal = 8.dp)
+                    .fillMaxSize()
+            ) {
+                Spacer(Modifier.height(20.dp))
+                Column(
+                    modifier = Modifier.padding(
+                        horizontal = 20.dp,
+                        vertical = 30.dp
+                    )
+                ) {
+                    Text(
+                        text = screenTitle,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Whiteish
+                    )
+                    Spacer(Modifier.height(18.dp))
+                    Text(
+                        text = screenDescription,
+                        fontSize = 15.sp,
+                        color = Whiteish
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxSize()
+                        .background(
+                            color = Whiteish,
+                            shape = RoundedCornerShape(
+                                topStart = 16.dp,
+                                topEnd = 16.dp
+                            )
+                        )
+                        .padding(
+                            top = 16.dp,
+                            start = 32.dp,
+                            end = 32.dp
+                        )
+                ) {
+                    content()
+                }
+            }
         }
-    }
+    )
 }
 
 @Preview(showBackground = true)
