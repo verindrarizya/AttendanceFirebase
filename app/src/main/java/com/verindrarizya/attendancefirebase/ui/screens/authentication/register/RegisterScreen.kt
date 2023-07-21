@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.ui.screens.authentication.login
+package com.verindrarizya.attendancefirebase.ui.screens.authentication.register
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,15 +22,15 @@ import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgYellow
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextDarkBlueGrayish
 
 @Composable
-fun LoginScreen(
+fun RegisterScreen(
     modifier: Modifier = Modifier,
-    navigateToRegisterScreen: () -> Unit,
+    navigateToLoginScreen: () -> Unit,
     navigateToDashboardScreen: () -> Unit
 ) {
     AuthTemplate(
         modifier = modifier,
-        screenTitle = stringResource(R.string.login_screen_title),
-        screenDescription = stringResource(R.string.login_screen_description),
+        screenTitle = stringResource(R.string.register_screen_title),
+        screenDescription = stringResource(R.string.register_screen_description),
         content = {
             Spacer(Modifier.height(24.dp))
             OutlinedTextFieldOutsideLabel(
@@ -41,16 +41,26 @@ fun LoginScreen(
             )
             Spacer(Modifier.height(22.dp))
             OutlinedTextFieldOutsideLabel(
+                label = stringResource(R.string.full_name),
+                textFieldValue = "",
+                onTextFieldValueChange = {}
+            )
+            Spacer(Modifier.height(22.dp))
+            OutlinedTextFieldOutsideLabel(
                 label = stringResource(R.string.password),
+                textFieldValue = "",
+                onTextFieldValueChange = {}
+            )
+            Spacer(Modifier.height(22.dp))
+            OutlinedTextFieldOutsideLabel(
+                label = stringResource(R.string.repeat_password),
                 textFieldValue = "",
                 onTextFieldValueChange = {}
             )
             Spacer(Modifier.weight(1f))
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = {
-                    navigateToDashboardScreen()
-                },
+                onClick = { navigateToDashboardScreen() },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = ButtonBgYellow,
@@ -58,15 +68,15 @@ fun LoginScreen(
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.login),
+                    text = stringResource(R.string.register),
                 )
             }
             Spacer(Modifier.height(12.dp))
             SpanClickableText(
                 modifier = Modifier.fillMaxWidth(),
-                onSpanTextClick = { navigateToRegisterScreen() },
-                regularText = "Don't have an account? Please",
-                clickableText = "Register",
+                onSpanTextClick = { navigateToLoginScreen() },
+                regularText = "Already have an account? Please",
+                clickableText = "Login",
                 fontSize = 12.sp
             )
             Spacer(Modifier.height(21.dp))
@@ -76,11 +86,11 @@ fun LoginScreen(
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
+fun RegisterScreenPreview() {
     AttendanceFirebaseTheme {
-        LoginScreen(
-            navigateToDashboardScreen = {},
-            navigateToRegisterScreen = {}
+        RegisterScreen(
+            navigateToLoginScreen = {},
+            navigateToDashboardScreen = {}
         )
     }
 }

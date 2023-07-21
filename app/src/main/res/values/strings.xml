@@ -8,8 +8,9 @@
     <string name="login_screen_title">Welcome Back!</string>
     <string name="login_screen_description">Just a step away from easier way to record attendance</string>
     <string name="register_screen_title">Register New Account</string>
-    <string name="register_screen_description">Create an account and immediately experience a fresh way to record attendance</string>
+    <string name="register_screen_description">Just a minute away from a fresh way to record attendance</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
-
+    <string name="full_name">Full Name</string>
+    <string name="repeat_password">Repeat Password</string>
 </resources>
