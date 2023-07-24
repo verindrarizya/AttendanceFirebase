@@ -2,7 +2,7 @@ package com.verindrarizya.attendancefirebase.ui.screens.onboarding
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.verindrarizya.attendancefirebase.ui.screens.Destination
+import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 
 object OnBoardingDestination : Destination {
     override val routeName: String = "OnBoardingDestination"
