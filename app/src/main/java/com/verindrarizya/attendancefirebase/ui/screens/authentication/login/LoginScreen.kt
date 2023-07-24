@@ -24,8 +24,8 @@ import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextDarkBlueGrayish
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    navigateToRegisterScreen: () -> Unit,
-    navigateToDashboardScreen: () -> Unit
+    onNavigateToRegisterScreen: () -> Unit,
+    onNavigateToDashboardScreen: () -> Unit
 ) {
     AuthTemplate(
         modifier = modifier,
@@ -49,7 +49,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    navigateToDashboardScreen()
+                    onNavigateToDashboardScreen()
                 },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -64,7 +64,7 @@ fun LoginScreen(
             Spacer(Modifier.height(12.dp))
             SpanClickableText(
                 modifier = Modifier.fillMaxWidth(),
-                onSpanTextClick = { navigateToRegisterScreen() },
+                onSpanTextClick = { onNavigateToRegisterScreen() },
                 regularText = "Don't have an account? Please",
                 clickableText = "Register",
                 fontSize = 12.sp
@@ -79,8 +79,8 @@ fun LoginScreen(
 fun LoginScreenPreview() {
     AttendanceFirebaseTheme {
         LoginScreen(
-            navigateToDashboardScreen = {},
-            navigateToRegisterScreen = {}
+            onNavigateToDashboardScreen = {},
+            onNavigateToRegisterScreen = {}
         )
     }
 }

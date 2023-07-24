@@ -51,7 +51,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.verindrarizya.attendancefirebase.R
-import com.verindrarizya.attendancefirebase.ui.screens.Destination
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgBlue
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextGray
@@ -62,16 +61,12 @@ import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import kotlinx.coroutines.delay
 
-object OnBoardingDestination : Destination {
-    override val routeName: String = "OnBoardingDestination"
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnBoardingScreen(
     modifier: Modifier = Modifier,
-    onButtonLoginClicked: () -> Unit,
-    onButtonSignUpClicked: () -> Unit
+    onNavigateToLoginScreen: () -> Unit,
+    onNavigateToRegisterScreen: () -> Unit
 ) {
     val pageCount = remember { onBoardingPagerItemContentContents.size }
     val pagerState = rememberPagerState()
@@ -133,8 +128,8 @@ fun OnBoardingScreen(
         Spacer(Modifier.height(40.dp))
         BottomAuthButton(
             modifier = Modifier.padding(horizontal = 16.dp),
-            onButtonSignUpClicked = onButtonSignUpClicked,
-            onButtonLoginClicked = onButtonLoginClicked
+            onButtonSignUpClicked = onNavigateToRegisterScreen,
+            onButtonLoginClicked = onNavigateToLoginScreen
         )
         Spacer(Modifier.height(24.dp))
     }
@@ -261,8 +256,8 @@ fun BottomAuthButton(
 fun OnBoardingScreenPreview() {
     AttendanceFirebaseTheme {
         OnBoardingScreen(
-            onButtonLoginClicked = {},
-            onButtonSignUpClicked = {}
+            onNavigateToLoginScreen = {},
+            onNavigateToRegisterScreen = {}
         )
     }
 }
