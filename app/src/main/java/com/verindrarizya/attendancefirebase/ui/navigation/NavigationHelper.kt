@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.ui.screens
+package com.verindrarizya.attendancefirebase.ui.navigation
 
 import androidx.navigation.NavOptionsBuilder
 

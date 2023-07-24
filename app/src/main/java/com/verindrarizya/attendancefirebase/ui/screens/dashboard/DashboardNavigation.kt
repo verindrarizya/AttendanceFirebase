@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.verindrarizya.attendancefirebase.ui.screens.Destination
+import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 
 object DashboardDestination : Destination {
     override val routeName: String = "dashboard"
