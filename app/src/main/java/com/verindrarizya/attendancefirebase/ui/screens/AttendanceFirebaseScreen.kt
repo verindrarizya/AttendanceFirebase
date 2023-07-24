@@ -1,13 +1,21 @@
 package com.verindrarizya.attendancefirebase.ui.screens
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.ui.navigation.GlobalAuthDestination
 import com.verindrarizya.attendancefirebase.ui.navigation.authGraph
 import com.verindrarizya.attendancefirebase.ui.navigation.navigateToGlobalAuth
@@ -28,13 +36,13 @@ fun AttendanceFirebaseScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: AttendanceFirebaseViewModel = viewModel()
 ) {
-    val isUserOnBoarded by viewModel.isUserAlreadyOnBoarded.collectAsStateWithLifecycle()
+    val isUserOnBoarded: Boolean? by viewModel.isUserAlreadyOnBoarded.collectAsStateWithLifecycle()
 
-    isUserOnBoarded?.let { flag ->
+    if (isUserOnBoarded != null) {
         NavHost(
             modifier = modifier,
             navController = navController,
-            startDestination = if (flag) {
+            startDestination = if (isUserOnBoarded == true) {
                 GlobalAuthDestination.routeName
             } else {
                 OnBoardingDestination.routeName
@@ -96,6 +104,21 @@ fun AttendanceFirebaseScreen(
                     }
                 }
             )
+        }
+    } else {
+        Box(
+            modifier = modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            val composition by rememberLottieComposition(
+                spec = LottieCompositionSpec.Asset("loading.json")
+            )
+            val progress by animateLottieCompositionAsState(
+                composition = composition,
+                iterations = LottieConstants.IterateForever
+            )
+
+            LottieAnimation(composition = composition, progress = { progress })
         }
     }
 }
