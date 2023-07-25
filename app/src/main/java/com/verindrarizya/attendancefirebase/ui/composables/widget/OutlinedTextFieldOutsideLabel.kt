@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -27,7 +29,9 @@ fun OutlinedTextFieldOutsideLabel(
     modifier: Modifier = Modifier,
     label: String,
     textFieldValue: String,
-    onTextFieldValueChange: (String) -> Unit
+    onTextFieldValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     Column(
         modifier = modifier
@@ -50,7 +54,9 @@ fun OutlinedTextFieldOutsideLabel(
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = AttBlue,
                 cursorColor = AttBlue
-            )
+            ),
+            keyboardActions = keyboardActions,
+            keyboardOptions = keyboardOptions
         )
     }
 }
