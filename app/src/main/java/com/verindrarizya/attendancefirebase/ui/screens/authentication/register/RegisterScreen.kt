@@ -25,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.ui.composables.template.AuthTemplate
 import com.verindrarizya.attendancefirebase.ui.composables.widget.OutlinedTextFieldOutsideLabel
+import com.verindrarizya.attendancefirebase.ui.composables.widget.PasswordOutlinedTextFieldOutsideLabel
 import com.verindrarizya.attendancefirebase.ui.composables.widget.SpanClickableText
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgYellow
@@ -49,8 +50,9 @@ fun RegisterScreen(
         onTextFieldFullNameValueChange = viewModel::onFullNameValueChange,
         password = registerUiState.password,
         onTextFieldPasswordValueChange = viewModel::onPasswordValueChange,
-        repeatPassword = registerUiState.repeatPassword,
-        onTextFieldRepeatPasswordValueChange = viewModel::onRepeatPasswordValueChange
+        repeatPassword = registerUiState.repeatPassword ?: "",
+        onTextFieldRepeatPasswordValueChange = viewModel::onRepeatPasswordValueChange,
+        isRepeatPasswordError = registerUiState.isRepeatPasswordError
     )
 }
 
@@ -66,6 +68,7 @@ fun RegisterScreen(
     password: String,
     onTextFieldPasswordValueChange: (String) -> Unit,
     repeatPassword: String,
+    isRepeatPasswordError: Boolean,
     onTextFieldRepeatPasswordValueChange: (String) -> Unit,
 ) {
 
@@ -96,7 +99,7 @@ fun RegisterScreen(
                 ),
             )
             Spacer(Modifier.height(22.dp))
-            OutlinedTextFieldOutsideLabel(
+            PasswordOutlinedTextFieldOutsideLabel(
                 label = stringResource(R.string.password),
                 textFieldValue = password,
                 onTextFieldValueChange = onTextFieldPasswordValueChange,
@@ -108,10 +111,11 @@ fun RegisterScreen(
                 )
             )
             Spacer(Modifier.height(22.dp))
-            OutlinedTextFieldOutsideLabel(
+            PasswordOutlinedTextFieldOutsideLabel(
                 modifier = Modifier.imePadding(),
                 label = stringResource(R.string.repeat_password),
                 textFieldValue = repeatPassword,
+                isError = isRepeatPasswordError,
                 onTextFieldValueChange = onTextFieldRepeatPasswordValueChange
             )
             Spacer(Modifier.weight(1f))
@@ -155,7 +159,8 @@ fun RegisterScreenPreview() {
             password = "",
             onTextFieldPasswordValueChange = {},
             repeatPassword = "",
-            onTextFieldRepeatPasswordValueChange = {}
+            onTextFieldRepeatPasswordValueChange = {},
+            isRepeatPasswordError = false
         )
     }
 }
