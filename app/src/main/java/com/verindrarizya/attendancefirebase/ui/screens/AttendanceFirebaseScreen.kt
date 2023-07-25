@@ -1,31 +1,25 @@
 package com.verindrarizya.attendancefirebase.ui.screens
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
-import com.verindrarizya.attendancefirebase.ui.navigation.GlobalAuthDestination
 import com.verindrarizya.attendancefirebase.ui.navigation.authGraph
 import com.verindrarizya.attendancefirebase.ui.navigation.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.navigateToLogin
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.navigateToRegister
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.DashboardDestination
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.dashboardScreen
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.OnBoardingDestination
+import com.verindrarizya.attendancefirebase.ui.screens.onboarding.navigateToOnBoarding
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.onBoardingScreen
+import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingDestination
+import com.verindrarizya.attendancefirebase.ui.screens.preload.preloadingScreen
 
 @Composable
 fun AttendanceFirebaseScreen(
@@ -34,54 +28,46 @@ fun AttendanceFirebaseScreen(
     viewModel: AttendanceFirebaseViewModel = viewModel()
 ) {
     val isUserOnBoarded: Boolean? by viewModel.isUserAlreadyOnBoarded.collectAsStateWithLifecycle()
+    val currentBackStack by navController.currentBackStackEntryAsState()
 
-    if (isUserOnBoarded != null) {
-        NavHost(
-            modifier = modifier,
-            navController = navController,
-            startDestination = if (isUserOnBoarded == true) {
-                GlobalAuthDestination.routeName
+    LaunchedEffect(isUserOnBoarded) {
+        isUserOnBoarded?.let {
+            if (it) {
+                navController.navigateToGlobalAuth {
+                    popUpToInclusive(
+                        if (currentBackStack?.destination?.route == PreloadingDestination.routeName) {
+                            PreloadingDestination
+                        } else {
+                            OnBoardingDestination
+                        }
+                    )
+                }
             } else {
-                OnBoardingDestination.routeName
+                navController.navigateToOnBoarding {
+                    popUpToInclusive(PreloadingDestination)
+                }
             }
-        ) {
-            onBoardingScreen(
-                onNavigateToLoginScreen = {
-                    viewModel.setUserOnBoarded()
-                    navController.navigateToLogin {
-                        popUpToInclusive(OnBoardingDestination)
-                    }
-                },
-                onNavigateToRegisterScreen = {
-                    viewModel.setUserOnBoarded()
-                    navController.navigateToRegister {
-                        popUpToInclusive(OnBoardingDestination)
-                    }
-                }
-            )
-            authGraph(navController = navController)
-            dashboardScreen(
-                onNavigateToAuth = {
-                    navController.navigateToGlobalAuth {
-                        popUpToInclusive(DashboardDestination)
-                    }
-                }
-            )
         }
-    } else {
-        Box(
-            modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            val composition by rememberLottieComposition(
-                spec = LottieCompositionSpec.Asset("loading.json")
-            )
-            val progress by animateLottieCompositionAsState(
-                composition = composition,
-                iterations = LottieConstants.IterateForever
-            )
+    }
 
-            LottieAnimation(composition = composition, progress = { progress })
-        }
+    NavHost(
+        modifier = modifier,
+        navController = navController,
+        startDestination = PreloadingDestination.routeName
+    ) {
+        preloadingScreen()
+        onBoardingScreen(
+            onButtonStartedClicked = {
+                viewModel.setUserOnBoarded()
+            }
+        )
+        authGraph(navController = navController)
+        dashboardScreen(
+            onNavigateToAuth = {
+                navController.navigateToGlobalAuth {
+                    popUpToInclusive(DashboardDestination)
+                }
+            }
+        )
     }
 }

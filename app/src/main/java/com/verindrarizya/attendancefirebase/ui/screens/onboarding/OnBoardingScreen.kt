@@ -4,8 +4,8 @@ package com.verindrarizya.attendancefirebase.ui.screens.onboarding
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,9 +19,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -29,10 +29,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -53,7 +54,6 @@ import androidx.compose.ui.unit.sp
 import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgBlue
-import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextGray
 import com.verindrarizya.attendancefirebase.ui.theme.MontserratFamily
 import com.verindrarizya.attendancefirebase.ui.theme.PagerIndicatorActive
 import com.verindrarizya.attendancefirebase.ui.theme.PagerIndicatorInactive
@@ -65,12 +65,25 @@ import kotlinx.coroutines.delay
 @Composable
 fun OnBoardingScreen(
     modifier: Modifier = Modifier,
-    onNavigateToLoginScreen: () -> Unit,
-    onNavigateToRegisterScreen: () -> Unit
+    onButtonStartedClicked: () -> Unit,
 ) {
     val pageCount = remember { onBoardingPagerItemContentContents.size }
     val pagerState = rememberPagerState()
     var flagAnimate by rememberSaveable { mutableStateOf(true) }
+
+    val isLastPage by remember {
+        derivedStateOf {
+            pagerState.currentPage == pageCount - 1
+        }
+    }
+
+    val buttonAlpha by animateFloatAsState(
+        if (isLastPage) 1f else 0f
+    )
+
+    val buttonOffset by animateDpAsState(
+        if (isLastPage) 0.dp else 16.dp
+    )
 
     LaunchedEffect(Unit) {
         if (flagAnimate) {
@@ -126,11 +139,23 @@ fun OnBoardingScreen(
             pagerState = pagerState,
         )
         Spacer(Modifier.height(40.dp))
-        BottomAuthButton(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            onButtonSignUpClicked = onNavigateToRegisterScreen,
-            onButtonLoginClicked = onNavigateToLoginScreen
-        )
+        Button(
+            modifier = Modifier
+                .offset(y = buttonOffset)
+                .alpha(buttonAlpha)
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth(),
+            onClick = onButtonStartedClicked,
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = ButtonBgBlue,
+            ),
+            enabled = isLastPage,
+        ) {
+            Text(
+                text = stringResource(id = R.string.started),
+            )
+        }
         Spacer(Modifier.height(24.dp))
     }
 }
@@ -207,57 +232,12 @@ fun PagerIndicatorItem(
     )
 }
 
-@Composable
-fun BottomAuthButton(
-    modifier: Modifier = Modifier,
-    onButtonLoginClicked: () -> Unit,
-    onButtonSignUpClicked: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Button(
-            modifier = Modifier
-                .weight(1f),
-            onClick = onButtonLoginClicked,
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = ButtonBgBlue,
-            )
-        ) {
-            Text(
-                text = stringResource(id = R.string.login),
-            )
-        }
-        Spacer(Modifier.width(16.dp))
-        OutlinedButton(
-            modifier = Modifier
-                .weight(1f),
-            onClick = onButtonSignUpClicked,
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.outlinedButtonColors(
-                contentColor = ButtonTextGray,
-            ),
-            border = BorderStroke(
-                width = 1.dp,
-                color = ButtonTextGray
-            )
-        ) {
-            Text(
-                text = stringResource(id = R.string.register)
-            )
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun OnBoardingScreenPreview() {
     AttendanceFirebaseTheme {
         OnBoardingScreen(
-            onNavigateToLoginScreen = {},
-            onNavigateToRegisterScreen = {}
+            onButtonStartedClicked = {},
         )
     }
 }
