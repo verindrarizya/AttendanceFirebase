@@ -10,6 +10,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -37,6 +38,7 @@ fun AttendanceFirebaseScreen(
     viewModel: AttendanceFirebaseViewModel = viewModel()
 ) {
     val isUserOnBoarded: Boolean? by viewModel.isUserAlreadyOnBoarded.collectAsStateWithLifecycle()
+    val currentBackState by navController.currentBackStackEntryAsState()
 
     if (isUserOnBoarded != null) {
         NavHost(
@@ -66,7 +68,7 @@ fun AttendanceFirebaseScreen(
                 onNavigateToDashboardScreen = {
                     navController.navigateToDashboard {
                         popUpToInclusive(
-                            if (navController.currentDestination?.route == RegisterDestination.routeName) {
+                            if (currentBackState?.destination?.route == RegisterDestination.routeName) {
                                 RegisterDestination
                             } else {
                                 LoginDestination
@@ -77,7 +79,7 @@ fun AttendanceFirebaseScreen(
                 onNavigateToLoginScreen = {
                     navController.navigateToLogin {
                         popUpToInclusive(
-                            if (navController.currentDestination?.route == RegisterDestination.routeName) {
+                            if (currentBackState?.destination?.route == RegisterDestination.routeName) {
                                 RegisterDestination
                             } else {
                                 LoginDestination
@@ -88,7 +90,7 @@ fun AttendanceFirebaseScreen(
                 onNavigateToRegisterScreen = {
                     navController.navigateToRegister {
                         popUpToInclusive(
-                            if (navController.currentDestination?.route == RegisterDestination.routeName) {
+                            if (currentBackState?.destination?.route == RegisterDestination.routeName) {
                                 RegisterDestination
                             } else {
                                 LoginDestination
