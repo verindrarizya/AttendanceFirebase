@@ -1,11 +1,11 @@
 package com.verindrarizya.attendancefirebase.ui.screens.authentication.register
 
+import android.util.Log
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -13,8 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +38,8 @@ fun RegisterScreen(
 ) {
     val registerUiState by viewModel.registerUiState.collectAsStateWithLifecycle()
 
+    Log.d("RegisterTag", "RegisterScreen: ${registerUiState.registerEnabled}")
+
     RegisterScreen(
         modifier = modifier,
         onNavigateToLoginScreen = onNavigateToLoginScreen,
@@ -52,7 +52,8 @@ fun RegisterScreen(
         onTextFieldPasswordValueChange = viewModel::onPasswordValueChange,
         repeatPassword = registerUiState.repeatPassword ?: "",
         onTextFieldRepeatPasswordValueChange = viewModel::onRepeatPasswordValueChange,
-        isRepeatPasswordError = registerUiState.isRepeatPasswordError
+        isRepeatPasswordError = registerUiState.isRepeatPasswordError ?: false,
+        buttonRegisterEnabled = registerUiState.registerEnabled
     )
 }
 
@@ -70,9 +71,8 @@ fun RegisterScreen(
     repeatPassword: String,
     isRepeatPasswordError: Boolean,
     onTextFieldRepeatPasswordValueChange: (String) -> Unit,
+    buttonRegisterEnabled: Boolean
 ) {
-
-    val focusManager = LocalFocusManager.current
 
     AuthTemplate(
         modifier = modifier,
@@ -105,9 +105,6 @@ fun RegisterScreen(
                 onTextFieldValueChange = onTextFieldPasswordValueChange,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Down) }
                 )
             )
             Spacer(Modifier.height(22.dp))
@@ -126,7 +123,8 @@ fun RegisterScreen(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = ButtonBgYellow,
                     contentColor = ButtonTextDarkBlueGrayish
-                )
+                ),
+                enabled = buttonRegisterEnabled
             ) {
                 Text(
                     text = stringResource(R.string.register),
@@ -160,7 +158,8 @@ fun RegisterScreenPreview() {
             onTextFieldPasswordValueChange = {},
             repeatPassword = "",
             onTextFieldRepeatPasswordValueChange = {},
-            isRepeatPasswordError = false
+            isRepeatPasswordError = false,
+            buttonRegisterEnabled = true
         )
     }
 }

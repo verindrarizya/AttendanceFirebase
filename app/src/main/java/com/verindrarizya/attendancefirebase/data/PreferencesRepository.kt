@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
@@ -21,7 +20,6 @@ class PreferencesRepository @Inject constructor(
 ) {
 
     val isUserAlreadyOnBoarded: Flow<Boolean> = dataStore.data.map { preferences ->
-        delay(2_500)
         preferences[DataStoreKey.OnBoardedKey] ?: false
     }
 

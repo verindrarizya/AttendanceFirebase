@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 private const val APP_PREFERENCES = "app_preferences"
 
@@ -18,6 +19,7 @@ private const val APP_PREFERENCES = "app_preferences"
 object DataStoreModule {
 
     @Provides
+    @Singleton
     fun provideDataStore(
         @ApplicationContext applicationContext: Context
     ): DataStore<Preferences> {

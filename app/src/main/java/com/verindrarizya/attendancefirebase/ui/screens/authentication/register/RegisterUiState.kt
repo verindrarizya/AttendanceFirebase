@@ -7,5 +7,12 @@ data class RegisterUiState(
     val repeatPassword: String? = null,
 ) {
     val isRepeatPasswordError: Boolean
-        get() = !repeatPassword.isNullOrEmpty() && password != repeatPassword
+        get() = if (repeatPassword.isNullOrEmpty()) false else password != repeatPassword
+
+    val registerEnabled: Boolean
+        get() = email.isNotBlank()
+                && fullName.isNotBlank()
+                && password.isNotBlank()
+                && repeatPassword?.isNotBlank() ?: false
+                && !isRepeatPasswordError
 }
