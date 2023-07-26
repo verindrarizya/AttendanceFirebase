@@ -3,14 +3,18 @@ package com.verindrarizya.attendancefirebase.ui.screens.authentication.login
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +28,7 @@ import com.verindrarizya.attendancefirebase.ui.composables.widget.SpanClickableT
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgYellow
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextDarkBlueGrayish
+import com.verindrarizya.attendancefirebase.util.ResourceState
 
 @Composable
 fun LoginScreen(
@@ -32,9 +37,11 @@ fun LoginScreen(
     onNavigateToRegisterScreen: () -> Unit
 ) {
     val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
+    val loginResourceState by viewModel.loginResourceState.collectAsStateWithLifecycle()
 
     LoginScreen(
         modifier = modifier,
+        loginResourceState = loginResourceState,
         onNavigateToRegisterScreen = onNavigateToRegisterScreen,
         email = loginUiState.email,
         isEmailError = loginUiState.isEmailError,
@@ -50,6 +57,7 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
+    loginResourceState: ResourceState<String>,
     onNavigateToRegisterScreen: () -> Unit,
     email: String,
     isEmailError: Boolean,
@@ -71,7 +79,10 @@ fun LoginScreen(
                 label = stringResource(R.string.email),
                 textFieldValue = email,
                 onTextFieldValueChange = onEmailChange,
-                isError = isEmailError
+                isError = isEmailError,
+                keyboardOptions = KeyboardOptions(
+                    imeAction = ImeAction.Next
+                ),
             )
             Spacer(Modifier.height(22.dp))
             PasswordOutlinedTextFieldOutsideLabel(
@@ -84,7 +95,9 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    onButtonLoginClick()
+                    if (loginResourceState !is ResourceState.Loading) {
+                        onButtonLoginClick()
+                    }
                 },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
@@ -93,9 +106,13 @@ fun LoginScreen(
                 ),
                 enabled = isButtonLoginEnabled
             ) {
-                Text(
-                    text = stringResource(id = R.string.login),
-                )
+                if (loginResourceState is ResourceState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(14.dp)
+                    )
+                } else {
+                    Text(text = stringResource(R.string.login))
+                }
             }
             Spacer(Modifier.height(12.dp))
             SpanClickableText(
@@ -123,7 +140,8 @@ fun LoginScreenPreview() {
             isPasswordError = false,
             onPasswordChange = {},
             onButtonLoginClick = {},
-            isButtonLoginEnabled = true
+            isButtonLoginEnabled = true,
+            loginResourceState = ResourceState.Init
         )
     }
 }
