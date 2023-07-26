@@ -43,11 +43,6 @@ fun NavGraphBuilder.authGraph(
             }
         )
         loginScreen(
-            onNavigateToDashboardScreen = {
-                navController.navigateToDashboard {
-                    popUpToInclusive(LoginDestination)
-                }
-            },
             onNavigateToRegisterScreen = {
                 navController.navigateToRegister {
                     popUpToInclusive(LoginDestination)
