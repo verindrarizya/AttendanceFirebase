@@ -18,12 +18,10 @@ fun NavController.navigateToLogin(
 }
 
 fun NavGraphBuilder.loginScreen(
-    onNavigateToDashboardScreen: () -> Unit,
     onNavigateToRegisterScreen: () -> Unit
 ) {
     composable(route = LoginDestination.routeName) {
         LoginScreen(
-            onNavigateToDashboardScreen = onNavigateToDashboardScreen,
             onNavigateToRegisterScreen = onNavigateToRegisterScreen
         )
     }

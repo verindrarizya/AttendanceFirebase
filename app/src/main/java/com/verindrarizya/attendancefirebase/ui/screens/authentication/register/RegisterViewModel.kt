@@ -54,7 +54,7 @@ class RegisterViewModel @Inject constructor(
         registerUiState.value.apply {
             viewModelScope.launch {
                 authRepository.register(email, password, fullName).collectLatest {
-                    _registerResourceState.emit(it)
+                    _registerResourceState.value = it
                 }
             }
         }

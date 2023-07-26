@@ -71,6 +71,25 @@ class AuthRepository @Inject constructor(
         awaitClose { }
     }
 
+    fun login(
+        email: String,
+        password: String,
+    ): Flow<ResourceState<String>> = callbackFlow {
+        trySend(ResourceState.Loading)
+
+        val listener = OnCompleteListener<AuthResult> {
+            if (it.isSuccessful) {
+                trySend(ResourceState.Success("Login Success"))
+            } else {
+                trySend(ResourceState.Error(it.exception?.message ?: "Login Failed"))
+            }
+        }
+
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(listener)
+
+        awaitClose { }
+    }
+
     fun signOut() {
         auth.signOut()
     }
