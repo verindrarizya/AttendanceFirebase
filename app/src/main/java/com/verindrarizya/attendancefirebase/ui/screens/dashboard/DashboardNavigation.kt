@@ -17,12 +17,8 @@ fun NavController.navigateToDashboard(
     this.navigate(DashboardDestination.routeName, navOptions(builder))
 }
 
-fun NavGraphBuilder.dashboardScreen(
-    onNavigateToAuth: () -> Unit
-) {
+fun NavGraphBuilder.dashboardScreen() {
     composable(route = DashboardDestination.routeName) {
-        DashboardScreen(
-            onNavigateToAuth = onNavigateToAuth
-        )
+        DashboardScreen()
     }
 }

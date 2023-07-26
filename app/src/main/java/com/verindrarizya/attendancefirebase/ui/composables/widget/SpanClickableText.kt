@@ -1,6 +1,5 @@
 package com.verindrarizya.attendancefirebase.ui.composables.widget
 
-import android.util.Log
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.runtime.Composable
@@ -72,9 +71,7 @@ fun SpanClickableText(
 fun SpanClickableTextPreview() {
     AttendanceFirebaseTheme {
         SpanClickableText(
-            onSpanTextClick = {
-                Log.d("TextClickTag", "SpanClickableTextPreview: Clicked")
-            },
+            onSpanTextClick = { },
             regularText = "Memberi Makan?",
             clickableText = "Click"
         )

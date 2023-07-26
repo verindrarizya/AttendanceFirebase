@@ -6,6 +6,10 @@ data class RegisterUiState(
     val password: String = "",
     val repeatPassword: String? = null,
 ) {
+
+    val isPasswordError: Boolean
+        get() = if (password.isBlank()) false else password.length < 8
+
     val isRepeatPasswordError: Boolean
         get() = if (repeatPassword.isNullOrEmpty()) false else password != repeatPassword
 

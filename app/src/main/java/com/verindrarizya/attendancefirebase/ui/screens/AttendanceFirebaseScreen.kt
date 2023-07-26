@@ -8,14 +8,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.verindrarizya.attendancefirebase.data.repository.auth.AuthState
 import com.verindrarizya.attendancefirebase.ui.navigation.authGraph
 import com.verindrarizya.attendancefirebase.ui.navigation.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.DashboardDestination
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.dashboardScreen
-import com.verindrarizya.attendancefirebase.ui.screens.onboarding.OnBoardingDestination
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.navigateToDashboard
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.navigateToOnBoarding
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.onBoardingScreen
 import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingDestination
@@ -27,24 +26,25 @@ fun AttendanceFirebaseScreen(
     navController: NavHostController = rememberNavController(),
     viewModel: AttendanceFirebaseViewModel = viewModel()
 ) {
-    val isUserOnBoarded: Boolean? by viewModel.isUserAlreadyOnBoarded.collectAsStateWithLifecycle()
-    val currentBackStack by navController.currentBackStackEntryAsState()
+    val authenticationState by viewModel.authenticationState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isUserOnBoarded) {
-        isUserOnBoarded?.let {
-            if (it) {
-                navController.navigateToGlobalAuth {
-                    popUpToInclusive(
-                        if (currentBackStack?.destination?.route == PreloadingDestination.routeName) {
-                            PreloadingDestination
-                        } else {
-                            OnBoardingDestination
-                        }
-                    )
+    LaunchedEffect(authenticationState) {
+        authenticationState?.let { data ->
+            // first -> onboarded flag,
+            // second -> AuthState
+            if (data.second == AuthState.SignedIn) {
+                navController.navigateToDashboard {
+                    popUpToInclusive(navController.graph.id)
                 }
             } else {
-                navController.navigateToOnBoarding {
-                    popUpToInclusive(PreloadingDestination)
+                if (data.first) {
+                    navController.navigateToGlobalAuth {
+                        popUpToInclusive(navController.graph.id)
+                    }
+                } else {
+                    navController.navigateToOnBoarding {
+                        popUpToInclusive(navController.graph.id)
+                    }
                 }
             }
         }
@@ -63,11 +63,6 @@ fun AttendanceFirebaseScreen(
         )
         authGraph(navController = navController)
         dashboardScreen(
-            onNavigateToAuth = {
-                navController.navigateToGlobalAuth {
-                    popUpToInclusive(DashboardDestination)
-                }
-            }
         )
     }
 }
