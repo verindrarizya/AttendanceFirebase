@@ -68,6 +68,7 @@ fun RegisterScreen(
             viewModel.register()
         },
         email = registerUiState.email,
+        isEmailError = registerUiState.isEmailError,
         onTextFieldEmailValueChange = viewModel::onEmailValueChange,
         fullName = registerUiState.fullName,
         onTextFieldFullNameValueChange = viewModel::onFullNameValueChange,
@@ -77,7 +78,7 @@ fun RegisterScreen(
         repeatPassword = registerUiState.repeatPassword ?: "",
         onTextFieldRepeatPasswordValueChange = viewModel::onRepeatPasswordValueChange,
         isRepeatPasswordError = registerUiState.isRepeatPasswordError,
-        buttonRegisterEnabled = registerUiState.registerEnabled
+        buttonRegisterEnabled = registerUiState.registerEnabled,
     )
 }
 
@@ -88,6 +89,7 @@ fun RegisterScreen(
     onNavigateToLoginScreen: () -> Unit,
     onButtonRegisterClicked: () -> Unit,
     email: String,
+    isEmailError: Boolean,
     onTextFieldEmailValueChange: (String) -> Unit,
     fullName: String,
     onTextFieldFullNameValueChange: (String) -> Unit,
@@ -113,7 +115,8 @@ fun RegisterScreen(
                 onTextFieldValueChange = onTextFieldEmailValueChange,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
-                )
+                ),
+                isError = isEmailError
             )
             Spacer(Modifier.height(22.dp))
             OutlinedTextFieldOutsideLabel(
@@ -196,7 +199,8 @@ fun RegisterScreenPreview() {
             onTextFieldRepeatPasswordValueChange = {},
             isRepeatPasswordError = false,
             buttonRegisterEnabled = true,
-            isPasswordError = false
+            isPasswordError = false,
+            isEmailError = false
         )
     }
 }
