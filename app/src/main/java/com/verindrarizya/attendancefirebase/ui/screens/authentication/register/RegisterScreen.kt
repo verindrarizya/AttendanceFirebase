@@ -1,20 +1,22 @@
 package com.verindrarizya.attendancefirebase.ui.screens.authentication.register
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -30,49 +32,75 @@ import com.verindrarizya.attendancefirebase.ui.composables.widget.SpanClickableT
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgYellow
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextDarkBlueGrayish
+import com.verindrarizya.attendancefirebase.util.ResourceState
 
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     viewModel: RegisterViewModel = hiltViewModel(),
-    onNavigateToDashboardScreen: () -> Unit,
-    onNavigateToLoginScreen: () -> Unit
+    onNavigateToLoginScreen: () -> Unit,
+    onNavigateToDashboardScreen: () -> Unit
 ) {
     val registerUiState by viewModel.registerUiState.collectAsStateWithLifecycle()
+    val registerResourceState by viewModel.registerResourceState.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+
+    LaunchedEffect(registerResourceState) {
+        if (registerResourceState is ResourceState.Error) {
+            Toast.makeText(
+                context,
+                (registerResourceState as ResourceState.Error).message,
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
+        if (registerResourceState is ResourceState.Success) {
+            onNavigateToDashboardScreen()
+        }
+    }
 
     RegisterScreen(
         modifier = modifier,
         onNavigateToLoginScreen = onNavigateToLoginScreen,
-        onNavigateToDashboardScreen = onNavigateToDashboardScreen,
+        registerResourceState = registerResourceState,
+        onButtonRegisterClicked = {
+            viewModel.register()
+        },
         email = registerUiState.email,
+        isEmailError = registerUiState.isEmailError,
         onTextFieldEmailValueChange = viewModel::onEmailValueChange,
         fullName = registerUiState.fullName,
         onTextFieldFullNameValueChange = viewModel::onFullNameValueChange,
         password = registerUiState.password,
+        isPasswordError = registerUiState.isPasswordError,
         onTextFieldPasswordValueChange = viewModel::onPasswordValueChange,
         repeatPassword = registerUiState.repeatPassword ?: "",
         onTextFieldRepeatPasswordValueChange = viewModel::onRepeatPasswordValueChange,
-        isRepeatPasswordError = registerUiState.isRepeatPasswordError
+        isRepeatPasswordError = registerUiState.isRepeatPasswordError,
+        buttonRegisterEnabled = registerUiState.registerEnabled,
     )
 }
 
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
+    registerResourceState: ResourceState<String>,
     onNavigateToLoginScreen: () -> Unit,
-    onNavigateToDashboardScreen: () -> Unit,
+    onButtonRegisterClicked: () -> Unit,
     email: String,
+    isEmailError: Boolean,
     onTextFieldEmailValueChange: (String) -> Unit,
     fullName: String,
     onTextFieldFullNameValueChange: (String) -> Unit,
     password: String,
+    isPasswordError: Boolean,
     onTextFieldPasswordValueChange: (String) -> Unit,
     repeatPassword: String,
     isRepeatPasswordError: Boolean,
     onTextFieldRepeatPasswordValueChange: (String) -> Unit,
+    buttonRegisterEnabled: Boolean
 ) {
-
-    val focusManager = LocalFocusManager.current
 
     AuthTemplate(
         modifier = modifier,
@@ -87,7 +115,8 @@ fun RegisterScreen(
                 onTextFieldValueChange = onTextFieldEmailValueChange,
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
-                )
+                ),
+                isError = isEmailError
             )
             Spacer(Modifier.height(22.dp))
             OutlinedTextFieldOutsideLabel(
@@ -106,9 +135,7 @@ fun RegisterScreen(
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Next
                 ),
-                keyboardActions = KeyboardActions(
-                    onNext = { focusManager.moveFocus(focusDirection = FocusDirection.Down) }
-                )
+                isError = isPasswordError
             )
             Spacer(Modifier.height(22.dp))
             PasswordOutlinedTextFieldOutsideLabel(
@@ -121,16 +148,25 @@ fun RegisterScreen(
             Spacer(Modifier.weight(1f))
             Button(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onNavigateToDashboardScreen() },
+                onClick = {
+                    if (registerResourceState != ResourceState.Loading) {
+                        onButtonRegisterClicked()
+                    }
+                },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = ButtonBgYellow,
                     contentColor = ButtonTextDarkBlueGrayish
-                )
+                ),
+                enabled = buttonRegisterEnabled
             ) {
-                Text(
-                    text = stringResource(R.string.register),
-                )
+                if (registerResourceState is ResourceState.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(14.dp)
+                    )
+                } else {
+                    Text(text = stringResource(R.string.register))
+                }
             }
             Spacer(Modifier.height(12.dp))
             SpanClickableText(
@@ -151,7 +187,8 @@ fun RegisterScreenPreview() {
     AttendanceFirebaseTheme {
         RegisterScreen(
             onNavigateToLoginScreen = {},
-            onNavigateToDashboardScreen = {},
+            registerResourceState = ResourceState.Init,
+            onButtonRegisterClicked = {},
             email = "",
             onTextFieldEmailValueChange = {},
             fullName = "",
@@ -160,7 +197,10 @@ fun RegisterScreenPreview() {
             onTextFieldPasswordValueChange = {},
             repeatPassword = "",
             onTextFieldRepeatPasswordValueChange = {},
-            isRepeatPasswordError = false
+            isRepeatPasswordError = false,
+            buttonRegisterEnabled = true,
+            isPasswordError = false,
+            isEmailError = false
         )
     }
 }

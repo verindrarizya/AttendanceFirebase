@@ -18,13 +18,13 @@ fun NavController.navigateToRegister(
 }
 
 fun NavGraphBuilder.registerScreen(
-    onNavigateToDashboardScreen: () -> Unit,
-    onNavigateToLoginScreen: () -> Unit
+    onNavigateToLoginScreen: () -> Unit,
+    onNavigateToDashboardScreen: () -> Unit
 ) {
     composable(route = RegisterDestination.routeName) {
         RegisterScreen(
-            onNavigateToDashboardScreen = onNavigateToDashboardScreen,
-            onNavigateToLoginScreen = onNavigateToLoginScreen
+            onNavigateToLoginScreen = onNavigateToLoginScreen,
+            onNavigateToDashboardScreen = onNavigateToDashboardScreen
         )
     }
 }

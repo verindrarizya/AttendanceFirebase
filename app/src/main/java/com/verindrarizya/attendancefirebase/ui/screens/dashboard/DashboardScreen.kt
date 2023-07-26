@@ -14,13 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
-
 
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
-    onNavigateToAuth: () -> Unit
+    viewModel: DashboardViewModel = hiltViewModel(),
+) {
+    DashboardScreen(
+        modifier = modifier,
+        onButtonSignOutClicked = viewModel::signOut,
+    )
+}
+
+@Composable
+fun DashboardScreen(
+    modifier: Modifier = Modifier,
+    onButtonSignOutClicked: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -33,7 +44,10 @@ fun DashboardScreen(
     ) {
         Text(text = "Dashboard Screen")
         Spacer(Modifier.height(16.dp))
-        Button(onClick = { onNavigateToAuth() }) {
+        Button(onClick = {
+            onButtonSignOutClicked()
+        }
+        ) {
             Text("Sign Out")
         }
     }
@@ -44,7 +58,7 @@ fun DashboardScreen(
 fun DashboardScreenPreview() {
     AttendanceFirebaseTheme {
         DashboardScreen(
-            onNavigateToAuth = {}
+            onButtonSignOutClicked = {},
         )
     }
 }

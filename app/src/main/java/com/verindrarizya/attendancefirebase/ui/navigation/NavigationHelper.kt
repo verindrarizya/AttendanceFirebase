@@ -7,3 +7,9 @@ fun NavOptionsBuilder.popUpToInclusive(destination: Destination) {
         inclusive = true
     }
 }
+
+fun NavOptionsBuilder.popUpToInclusive(navGraphId: Int) {
+    popUpTo(navGraphId) {
+        inclusive = true
+    }
+}

@@ -31,14 +31,14 @@ fun NavGraphBuilder.authGraph(
         route = GlobalAuthDestination.routeName
     ) {
         registerScreen(
-            onNavigateToDashboardScreen = {
-                navController.navigateToDashboard {
-                    popUpToInclusive(RegisterDestination)
-                }
-            },
             onNavigateToLoginScreen = {
                 navController.navigateToLogin {
                     popUpToInclusive(RegisterDestination)
+                }
+            },
+            onNavigateToDashboardScreen = {
+                navController.navigateToDashboard {
+                    popUpToInclusive(navController.graph.id)
                 }
             }
         )
