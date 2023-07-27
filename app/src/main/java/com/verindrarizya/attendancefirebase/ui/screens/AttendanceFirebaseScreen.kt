@@ -8,11 +8,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.verindrarizya.attendancefirebase.data.repository.auth.AuthState
 import com.verindrarizya.attendancefirebase.ui.navigation.authGraph
 import com.verindrarizya.attendancefirebase.ui.navigation.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
+import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.RegisterDestination
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.dashboardScreen
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.navigateToDashboard
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.navigateToOnBoarding
@@ -27,14 +29,17 @@ fun AttendanceFirebaseScreen(
     viewModel: AttendanceFirebaseViewModel = viewModel()
 ) {
     val authenticationState by viewModel.authenticationState.collectAsStateWithLifecycle()
+    val currentBackStack by navController.currentBackStackEntryAsState()
 
     LaunchedEffect(authenticationState) {
         authenticationState?.let { data ->
             // first -> onboarded flag,
             // second -> AuthState
             if (data.second == AuthState.SignedIn) {
-                navController.navigateToDashboard {
-                    popUpToInclusive(navController.graph.id)
+                if (currentBackStack?.destination?.route != RegisterDestination.routeName) {
+                    navController.navigateToDashboard {
+                        popUpToInclusive(navController.graph.id)
+                    }
                 }
             } else {
                 if (data.first) {
