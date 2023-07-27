@@ -14,4 +14,7 @@
     <string name="full_name">Full Name</string>
     <string name="repeat_password">Repeat Password</string>
     <string name="started">Get Started</string>
+    <string name="home">Home</string>
+    <string name="history">History</string>
+    <string name="profile">Profile</string>
 </resources>
