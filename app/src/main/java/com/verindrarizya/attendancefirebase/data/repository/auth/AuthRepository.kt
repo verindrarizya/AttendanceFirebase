@@ -21,11 +21,7 @@ class AuthRepository @Inject constructor(
 
         val listener = AuthStateListener { p0 ->
             p0.currentUser?.let {
-                if (it.displayName != null) {
-                    trySend(AuthState.SignedIn)
-                } else {
-                    trySend(AuthState.SignedOut)
-                }
+                trySend(AuthState.SignedIn)
             } ?: trySend(AuthState.SignedOut)
         }
 
