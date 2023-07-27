@@ -21,3 +21,5 @@ val TextDarkBlue = Color(0xFF042C5C)
 
 val Whiteish = Color(0xFFFDFDFD)
 val AttBlue = Color(0xFF0062CD)
+
+val BackgroundIconColor = Color(0xFFDFE7F5)
