@@ -23,3 +23,4 @@ val Whiteish = Color(0xFFFDFDFD)
 val AttBlue = Color(0xFF0062CD)
 
 val BackgroundIconColor = Color(0xFFDFE7F5)
+val BackgroundScaffoldColor = Color(0xFFF8F9F9)
