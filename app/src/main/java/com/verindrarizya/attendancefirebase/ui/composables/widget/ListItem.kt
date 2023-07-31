@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,6 +29,56 @@ import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ListItem(
+    modifier: Modifier = Modifier,
+    header: String,
+    headerTextColor: Color = TextDarkBlue,
+    subHeader: String? = null,
+    subHeaderTextColor: Color = TextGray,
+    imageSlot: @Composable () -> Unit,
+    backgroundColor: Color = Color.White,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth(),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = backgroundColor,
+        ),
+        onClick = onClick,
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .height(IntrinsicSize.Min),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            imageSlot()
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.SpaceEvenly
+            ) {
+                Text(
+                    text = header,
+                    color = headerTextColor,
+                    fontWeight = FontWeight.SemiBold
+                )
+                if (subHeader != null) {
+                    Text(
+                        text = subHeader,
+                        fontSize = 12.sp,
+                        color = subHeaderTextColor,
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun ListItem(
