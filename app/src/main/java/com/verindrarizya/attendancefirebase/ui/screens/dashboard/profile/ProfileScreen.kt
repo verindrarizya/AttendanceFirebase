@@ -3,7 +3,6 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -207,16 +206,14 @@ fun ProfileScreen(
                             start = 16.dp,
                             end = 16.dp,
                             bottom = 12.dp
-                        )
-                        .clickable {
-                            onChangePasswordClick()
-                        },
+                        ),
                     header = "Ubah Password",
                     imageSlot = {
                         RoundedCornerIcon(
                             painter = painterResource(R.drawable.ic_lock)
                         )
-                    }
+                    },
+                    onClick = onChangePasswordClick
                 )
             }
             item {
@@ -226,16 +223,14 @@ fun ProfileScreen(
                             start = 16.dp,
                             end = 16.dp,
                             bottom = 12.dp
-                        )
-                        .clickable {
-                            onSignOutClick()
-                        },
+                        ),
                     header = "Sign Out",
                     imageSlot = {
                         RoundedCornerIcon(
                             painter = painterResource(R.drawable.ic_logout)
                         )
-                    }
+                    },
+                    onClick = onSignOutClick
                 )
             }
         }
