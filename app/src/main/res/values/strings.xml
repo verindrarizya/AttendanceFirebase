@@ -17,4 +17,10 @@
     <string name="home">Home</string>
     <string name="history">History</string>
     <string name="profile">Profile</string>
+    <string name="check_in">Check In</string>
+    <string name="check_out">Check Out</string>
+    <string name="attendance">Attendance</string>
+    <string name="location">Location</string>
+    <string name="attendance_history">Attendance History</string>
+    <string name="general">General</string>
 </resources>
