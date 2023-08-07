@@ -2,7 +2,7 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.verindrarizya.attendancefirebase.data.repository.auth.AuthRepository
+import com.verindrarizya.attendancefirebase.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

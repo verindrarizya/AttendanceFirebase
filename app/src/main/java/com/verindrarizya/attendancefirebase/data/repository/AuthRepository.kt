@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.data.repository.auth
+package com.verindrarizya.attendancefirebase.data.repository
 
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
@@ -6,6 +6,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.ktx.userProfileChangeRequest
+import com.verindrarizya.attendancefirebase.util.AuthState
 import com.verindrarizya.attendancefirebase.util.ResourceState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -13,7 +14,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
-const val TAG = "AuthTag"
+private const val TAG = "AuthTag"
 
 @Singleton
 class AuthRepository @Inject constructor(

@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.data
+package com.verindrarizya.attendancefirebase.data.repository
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

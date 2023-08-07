@@ -10,7 +10,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.verindrarizya.attendancefirebase.data.repository.auth.AuthState
 import com.verindrarizya.attendancefirebase.ui.navigation.authGraph
 import com.verindrarizya.attendancefirebase.ui.navigation.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
@@ -21,6 +20,7 @@ import com.verindrarizya.attendancefirebase.ui.screens.onboarding.navigateToOnBo
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.onBoardingScreen
 import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingDestination
 import com.verindrarizya.attendancefirebase.ui.screens.preload.preloadingScreen
+import com.verindrarizya.attendancefirebase.util.AuthState
 
 @Composable
 fun AttendanceFirebaseScreen(

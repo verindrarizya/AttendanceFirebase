@@ -2,7 +2,7 @@ package com.verindrarizya.attendancefirebase.ui.screens.authentication.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.verindrarizya.attendancefirebase.data.repository.auth.AuthRepository
+import com.verindrarizya.attendancefirebase.data.repository.AuthRepository
 import com.verindrarizya.attendancefirebase.util.ResourceState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

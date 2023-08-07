@@ -92,6 +92,7 @@ dependencies {
 
     // Firebase
     implementation 'com.google.firebase:firebase-auth-ktx'
+    implementation "com.google.firebase:firebase-database-ktx"
 
     testImplementation 'junit:junit:4.13.2'
 
