@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
+import com.verindrarizya.attendancefirebase.ui.theme.BgMustard
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgGreen
-import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgMustard
 
 @Composable
 fun CircleButton(
@@ -67,7 +67,7 @@ fun CircleButtonCheckOutPreview() {
         CircleButton(
             onClick = { },
             text = "Check Out",
-            backgroundColor = ButtonBgMustard
+            backgroundColor = BgMustard
         )
     }
 }
