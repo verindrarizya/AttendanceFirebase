@@ -15,7 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
-import com.verindrarizya.attendancefirebase.ui.theme.BackgroundIconColor
+import com.verindrarizya.attendancefirebase.ui.theme.BgGray
 
 @Composable
 fun OfficeImage(
@@ -27,7 +27,7 @@ fun OfficeImage(
         modifier = modifier
             .size(50.dp)
             .background(
-                color = BackgroundIconColor,
+                color = BgGray,
                 shape = RoundedCornerShape(10.dp)
             )
             .clip(RoundedCornerShape(10.dp)),

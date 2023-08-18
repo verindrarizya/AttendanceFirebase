@@ -11,14 +11,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.verindrarizya.attendancefirebase.ui.theme.BackgroundIconColor
+import com.verindrarizya.attendancefirebase.ui.theme.BgGray
 
 @Composable
 fun RoundedCornerIcon(
     modifier: Modifier = Modifier,
     painter: Painter,
     size: Dp = 50.dp,
-    backgroundColor: Color = BackgroundIconColor
+    backgroundColor: Color = BgGray
 ) {
     Image(
         modifier = modifier
