@@ -6,7 +6,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.verindrarizya.attendancefirebase.data.firebasemodel.AttendanceRecordSnapshot
+import com.verindrarizya.attendancefirebase.data.firebasemodel.toAttendance
 import com.verindrarizya.attendancefirebase.data.firebasemodel.toOffice
+import com.verindrarizya.attendancefirebase.ui.screens.model.AttendanceRecord
 import com.verindrarizya.attendancefirebase.ui.screens.model.Office
 import com.verindrarizya.attendancefirebase.util.AttendanceState
 import com.verindrarizya.attendancefirebase.util.CalendarUtils
@@ -107,4 +109,42 @@ class AttendanceRepository @Inject constructor(
 
         awaitClose { }
     }
+
+    fun getAttendanceRecords(
+        startDate: String,
+        endDate: String
+    ): Flow<ResourceState<List<AttendanceRecord>>> = callbackFlow {
+        trySend(ResourceState.Loading)
+
+        val attendanceRecordsValueEventListener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val attendanceRecords = snapshot.children
+                    .mapNotNull {
+                        it.getValue(AttendanceRecordSnapshot::class.java)
+                    }.map {
+                        it.toAttendance()
+                    }.reversed()
+
+                trySend(ResourceState.Success(attendanceRecords))
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                trySend(ResourceState.Error(error.message))
+            }
+        }
+
+        val userAttendanceReference = firebaseDatabase
+            .getReference("attendance")
+            .child(auth.currentUser?.uid ?: "")
+            .orderByChild("date")
+            .startAt(endDate)
+            .endAt(startDate)
+
+        userAttendanceReference.addValueEventListener(attendanceRecordsValueEventListener)
+
+        awaitClose {
+            userAttendanceReference.removeEventListener(attendanceRecordsValueEventListener)
+        }
+    }
+
 }
