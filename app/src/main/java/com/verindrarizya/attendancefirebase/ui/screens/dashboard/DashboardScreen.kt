@@ -22,6 +22,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.history.historyScreen
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.home.homeScreen
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile.profileScreen
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
@@ -60,6 +61,7 @@ fun DashboardScreen(
             startDestination = DashboardItemScreen.HomeScreen.routeName,
         ) {
             homeScreen()
+            historyScreen()
             profileScreen()
         }
     }

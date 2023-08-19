@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -60,10 +61,12 @@ import com.verindrarizya.attendancefirebase.ui.screens.model.AttendanceRecord
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.BgGray
+import com.verindrarizya.attendancefirebase.ui.theme.BgMustard
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
+import com.verindrarizya.attendancefirebase.util.AttendanceState
 import com.verindrarizya.attendancefirebase.util.DataDummy
 import com.verindrarizya.attendancefirebase.util.ResourceState
 
@@ -79,11 +82,17 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
-//    HistoryScreen(
-//        modifier = modifier,
-//        onIconNotificationClick = {},
-//        selectedHistoryDateFilter = null
-//    )
+    val selectedHistoryDateFilter by viewModel.selectedHistoryDateFilter.collectAsStateWithLifecycle()
+    val attendanceRecordResourceState by viewModel.attendanceRecordResourceState.collectAsStateWithLifecycle()
+
+    HistoryScreen(
+        modifier = modifier,
+        selectedHistoryDateFilter = selectedHistoryDateFilter,
+        onSelectHistoryDateFilter = { viewModel.selectHistoryDateFilter(it) },
+        onRefresh = {},
+        attendanceRecordResourceState = attendanceRecordResourceState,
+        onIconNotificationClick = {}
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -94,7 +103,7 @@ fun HistoryScreen(
     selectedHistoryDateFilter: HistoryDateFilter?,
     onSelectHistoryDateFilter: (HistoryDateFilter) -> Unit,
     onIconNotificationClick: () -> Unit,
-    onRefreshButtonClick: () -> Unit,
+    onRefresh: () -> Unit,
     attendanceRecordResourceState: ResourceState<List<AttendanceRecord>>,
 ) {
     val localDirection = LocalLayoutDirection.current
@@ -224,7 +233,7 @@ fun HistoryScreen(
                             )
                             Spacer(Modifier.height(12.dp))
                             OutlinedButton(
-                                onClick = { onRefreshButtonClick() },
+                                onClick = { onRefresh() },
                                 border = ButtonDefaults.outlinedButtonBorder.copy(
                                     brush = SolidColor(
                                         value = ButtonBgBlue
@@ -304,13 +313,17 @@ fun HistoryScreen(
                             ) {
                                 items(attendanceRecordResourceState.data) {
                                     AsyncImageListItem(
-                                        header = it.officeName,
-                                        subHeader = it.address,
+                                        header = "${it.status} - ${it.officeName}",
+                                        subHeader = "${it.date} ${it.hour}",
                                         imageUrl = it.officeImageUrl,
                                         backgroundColor = Color(0xFFFAF9F6),
                                         border = BorderStroke(
                                             width = 1.dp,
-                                            color = AttBlue
+                                            color = if (it.status == AttendanceState.CheckIn.value) {
+                                                AttBlue
+                                            } else {
+                                                BgMustard
+                                            }
                                         )
                                     )
                                 }
@@ -332,7 +345,7 @@ fun HistoryScreenSuccessPreview() {
             selectedHistoryDateFilter = HistoryDateFilter.Day(),
             attendanceRecordResourceState = ResourceState.Success(DataDummy.attendanceRecords),
             onSelectHistoryDateFilter = {},
-            onRefreshButtonClick = {}
+            onRefresh = {}
         )
     }
 }
