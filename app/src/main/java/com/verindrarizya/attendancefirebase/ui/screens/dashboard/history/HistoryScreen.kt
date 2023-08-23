@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,19 +17,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ChipDefaults
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FilterChip
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.OutlinedButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,7 +36,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +63,6 @@ import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
 import com.verindrarizya.attendancefirebase.util.AttendanceState
-import com.verindrarizya.attendancefirebase.util.DataDummy
 import com.verindrarizya.attendancefirebase.util.ResourceState
 
 private val listOfFilter: List<HistoryDateFilter> = listOf(
@@ -95,7 +90,7 @@ fun HistoryScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
@@ -106,44 +101,15 @@ fun HistoryScreen(
     onRefresh: () -> Unit,
     attendanceRecordResourceState: ResourceState<List<AttendanceRecord>>,
 ) {
-    val localDirection = LocalLayoutDirection.current
-
     Scaffold(
         modifier = modifier,
-        containerColor = Color.Gray,
+        backgroundColor = Color.Gray,
         topBar = {
-            TopAppBar(
-                modifier = Modifier
-                    .zIndex(6f),
-                title = {
-                    Text(
-                        text = "Attendance History",
-                        color = Whiteish,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                actions = {
-                    IconButton(onClick = onIconNotificationClick) {
-                        Icon(
-                            Icons.Filled.Notifications,
-                            contentDescription = "Notification",
-                            tint = Whiteish
-                        )
-                    }
-                }
-            )
         }
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier
-                .padding(
-                    start = paddingValues.calculateStartPadding(localDirection),
-                    end = paddingValues.calculateEndPadding(localDirection),
-                    bottom = paddingValues.calculateBottomPadding()
-                )
+                .padding(paddingValues)
                 .fillMaxSize()
         ) {
             Image(
@@ -152,131 +118,91 @@ fun HistoryScreen(
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth
             )
-            Column(
-                modifier = Modifier
-                    .padding(
-                        start = 8.dp,
-                        end = 8.dp,
-                        top = paddingValues.calculateTopPadding() + 16.dp
-                    )
-                    .background(
-                        color = Whiteish,
-                        shape = RoundedCornerShape(
-                            topStart = 10.dp,
-                            topEnd = 10.dp
+            Column {
+                TopAppBar(
+                    modifier = Modifier
+                        .zIndex(6f),
+                    title = {
+                        Text(
+                            text = "Attendance History",
+                            color = Whiteish,
+                            fontWeight = FontWeight.SemiBold
                         )
-                    )
-                    .fillMaxSize()
-            ) {
-                Text(
+                    },
+                    backgroundColor = Color.Transparent,
+                    actions = {
+                        IconButton(onClick = onIconNotificationClick) {
+                            Icon(
+                                Icons.Filled.Notifications,
+                                contentDescription = "Notification",
+                                tint = Whiteish
+                            )
+                        }
+                    },
+                    elevation = 0.dp
+                )
+                Spacer(Modifier.height(20.dp))
+                Column(
                     modifier = Modifier
                         .padding(
-                            top = 32.dp,
-                            start = 16.dp,
-                            end = 16.dp,
-                        ),
-                    text = "Logs",
-                    fontSize = 20.sp,
-                    color = TextDarkBlue,
-                    fontWeight = FontWeight.SemiBold
-                )
-                Spacer(Modifier.height(12.dp))
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    contentPadding = PaddingValues(
-                        horizontal = 16.dp
-                    )
+                            start = 8.dp,
+                            end = 8.dp,
+                        )
+                        .background(
+                            color = Whiteish,
+                            shape = RoundedCornerShape(
+                                topStart = 10.dp,
+                                topEnd = 10.dp
+                            )
+                        )
+                        .fillMaxSize()
                 ) {
-                    items(historyDateFilters) {
-                        FilterChip(
-                            selected = it == selectedHistoryDateFilter,
-                            onClick = { onSelectHistoryDateFilter(it) },
-                            label = {
-                                Text(
-                                    text = stringResource(it.nameStrResource),
-                                    color = if (it == selectedHistoryDateFilter) TextDarkBlue else TextGray,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            },
-                            border = FilterChipDefaults.filterChipBorder(
-                                borderColor = Color.Transparent
+                    Text(
+                        modifier = Modifier
+                            .padding(
+                                top = 32.dp,
+                                start = 16.dp,
+                                end = 16.dp,
                             ),
-                            colors = FilterChipDefaults.filterChipColors(
-                                selectedContainerColor = BgGray
-                            )
+                        text = "Logs",
+                        fontSize = 20.sp,
+                        color = TextDarkBlue,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(
+                            horizontal = 16.dp
                         )
-                    }
-                }
-                Spacer(Modifier.height(12.dp))
-                when (attendanceRecordResourceState) {
-                    is ResourceState.Error -> {
-                        val composition by rememberLottieComposition(
-                            spec = LottieCompositionSpec.Asset("error.json")
-                        )
-
-                        val progress by animateLottieCompositionAsState(
-                            composition = composition,
-                            iterations = LottieConstants.IterateForever,
-                            speed = 0.5f
-                        )
-
-                        Column(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.Center,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            LottieAnimation(
-                                modifier = Modifier.size(200.dp),
-                                composition = composition,
-                                progress = { progress },
-                                contentScale = ContentScale.FillWidth
-                            )
-                            Spacer(Modifier.height(12.dp))
-                            OutlinedButton(
-                                onClick = { onRefresh() },
-                                border = ButtonDefaults.outlinedButtonBorder.copy(
-                                    brush = SolidColor(
-                                        value = ButtonBgBlue
+                    ) {
+                        items(historyDateFilters) {
+                            FilterChip(
+                                shape = RoundedCornerShape(8.dp),
+                                selected = it == selectedHistoryDateFilter,
+                                onClick = { onSelectHistoryDateFilter(it) },
+                                content = {
+                                    Text(
+                                        modifier = Modifier.padding(
+                                            horizontal = 14.dp
+                                        ),
+                                        text = stringResource(it.nameStrResource),
+                                        color = if (it == selectedHistoryDateFilter) TextDarkBlue else TextGray,
+                                        fontWeight = FontWeight.Medium
                                     )
+                                },
+                                colors = ChipDefaults.filterChipColors(
+                                    selectedBackgroundColor = BgGray,
+                                    backgroundColor = Color.Transparent
                                 )
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.refresh),
-                                    color = TextDarkBlue
-                                )
-                            }
-                        }
-                    }
-
-                    ResourceState.Init -> { /* Do Nothing  */
-                    }
-
-                    ResourceState.Loading -> {
-                        val composition by rememberLottieComposition(
-                            spec = LottieCompositionSpec.Asset("loading.json")
-                        )
-
-                        val progress by animateLottieCompositionAsState(
-                            composition = composition,
-                            iterations = LottieConstants.IterateForever
-                        )
-
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LottieAnimation(
-                                composition = composition,
-                                progress = { progress }
                             )
                         }
                     }
-
-                    is ResourceState.Success -> {
-                        if (attendanceRecordResourceState.data.isEmpty()) {
+                    Spacer(Modifier.height(12.dp))
+                    when (attendanceRecordResourceState) {
+                        is ResourceState.Error -> {
                             val composition by rememberLottieComposition(
-                                spec = LottieCompositionSpec.Asset("empty.json")
+                                spec = LottieCompositionSpec.Asset("error.json")
                             )
 
                             val progress by animateLottieCompositionAsState(
@@ -297,35 +223,105 @@ fun HistoryScreen(
                                     contentScale = ContentScale.FillWidth
                                 )
                                 Spacer(Modifier.height(12.dp))
-                                Text(
-                                    text = stringResource(R.string.empty_statement),
-                                    color = TextDarkBlue,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        } else {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                                contentPadding = PaddingValues(horizontal = 16.dp)
-                            ) {
-                                items(attendanceRecordResourceState.data) {
-                                    AsyncImageListItem(
-                                        header = "${it.status} - ${it.officeName}",
-                                        subHeader = "${it.date} ${it.hour}",
-                                        imageUrl = it.officeImageUrl,
-                                        backgroundColor = Color(0xFFFAF9F6),
-                                        border = BorderStroke(
-                                            width = 1.dp,
-                                            color = if (it.status == AttendanceState.CheckIn.value) {
-                                                AttBlue
-                                            } else {
-                                                BgMustard
-                                            }
+                                OutlinedButton(
+                                    onClick = { onRefresh() },
+                                    border = ButtonDefaults.outlinedBorder.copy(
+                                        brush = SolidColor(
+                                            value = ButtonBgBlue
                                         )
                                     )
+                                ) {
+                                    Text(
+                                        text = stringResource(R.string.refresh),
+                                        color = TextDarkBlue
+                                    )
+                                }
+                            }
+                        }
+
+                        ResourceState.Init -> { /* Do Nothing  */
+                        }
+
+                        ResourceState.Loading -> {
+                            val composition by rememberLottieComposition(
+                                spec = LottieCompositionSpec.Asset("loading.json")
+                            )
+
+                            val progress by animateLottieCompositionAsState(
+                                composition = composition,
+                                iterations = LottieConstants.IterateForever
+                            )
+
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                LottieAnimation(
+                                    composition = composition,
+                                    progress = { progress }
+                                )
+                            }
+                        }
+
+                        is ResourceState.Success -> {
+                            if (attendanceRecordResourceState.data.isEmpty()) {
+                                val composition by rememberLottieComposition(
+                                    spec = LottieCompositionSpec.Asset("empty.json")
+                                )
+
+                                val progress by animateLottieCompositionAsState(
+                                    composition = composition,
+                                    iterations = LottieConstants.IterateForever,
+                                    speed = 0.5f
+                                )
+
+                                Column(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    LottieAnimation(
+                                        modifier = Modifier.size(200.dp),
+                                        composition = composition,
+                                        progress = { progress },
+                                        contentScale = ContentScale.FillWidth
+                                    )
+                                    Spacer(Modifier.height(12.dp))
+                                    Text(
+                                        text = stringResource(R.string.empty_statement),
+                                        color = TextDarkBlue,
+                                        fontSize = 18.sp,
+                                        fontWeight = FontWeight.Medium,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            } else {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                                    contentPadding = PaddingValues(
+                                        bottom = 10.dp,
+                                        start = 16.dp,
+                                        end = 16.dp
+                                    )
+                                ) {
+                                    items(attendanceRecordResourceState.data) {
+                                        AsyncImageListItem(
+                                            header = "${it.status} - ${it.officeName}",
+                                            subHeader = "${it.date} ${it.hour}",
+                                            imageUrl = it.officeImageUrl,
+                                            backgroundColor = Color(0xFFFAF9F6),
+                                            border = BorderStroke(
+                                                width = 1.dp,
+                                                color = if (it.status == AttendanceState.CheckIn.value) {
+                                                    AttBlue
+                                                } else {
+                                                    BgMustard
+                                                }
+                                            )
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -339,11 +335,23 @@ fun HistoryScreen(
 @Preview
 @Composable
 fun HistoryScreenSuccessPreview() {
+    val attendanceRecords: List<AttendanceRecord> = (1..10).map {
+        AttendanceRecord(
+            status = if (it % 2 == 0) AttendanceState.CheckIn.value else AttendanceState.CheckOut.value,
+            officeId = 1,
+            address = "Address $it",
+            officeImageUrl = "https://docs.google.com/uc?id=1QLUw3n7tpZt5iV7RxwzgIwgi6w1Jo29Q",
+            officeName = "Office Name $it",
+            date = "01-01-2020",
+            hour = "12:00"
+        )
+    }
+
     AttendanceFirebaseTheme {
         HistoryScreen(
             onIconNotificationClick = { },
             selectedHistoryDateFilter = HistoryDateFilter.Day(),
-            attendanceRecordResourceState = ResourceState.Success(DataDummy.attendanceRecords),
+            attendanceRecordResourceState = ResourceState.Success(attendanceRecords),
             onSelectHistoryDateFilter = {},
             onRefresh = {}
         )

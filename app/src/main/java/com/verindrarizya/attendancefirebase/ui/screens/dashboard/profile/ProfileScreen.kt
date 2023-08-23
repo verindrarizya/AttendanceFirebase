@@ -1,45 +1,34 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 
-import android.annotation.SuppressLint
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
@@ -63,8 +52,6 @@ fun ProfileScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
@@ -73,55 +60,17 @@ fun ProfileScreen(
     onIconEditClick: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
-    val localDirection = LocalLayoutDirection.current
-    val isScrolled by remember {
-        derivedStateOf { lazyListState.firstVisibleItemScrollOffset >= 40 }
-    }
-
-    val topAppbarContentColorAnimate by animateColorAsState(
-        targetValue = if (isScrolled) TextDarkBlue else Whiteish, label = "text toolbar color"
-    )
-
-    val topAppBarContainerColorAnimate by animateColorAsState(
-        targetValue = if (isScrolled) Whiteish else Color.Transparent, label = "toolbar color"
-    )
 
     Scaffold(
         modifier = modifier,
         topBar = {
-            TopAppBar(
-                modifier = Modifier
-                    .zIndex(6f),
-                title = {
-                    Text(
-                        text = "Profile",
-                        color = topAppbarContentColorAnimate,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = topAppBarContainerColorAnimate
-                ),
-                actions = {
-                    IconButton(onClick = onIconEditClick) {
-                        Icon(
-                            painterResource(id = R.drawable.ic_edit),
-                            contentDescription = "Edit Profile",
-                            tint = topAppbarContentColorAnimate
-                        )
-                    }
-                }
-            )
+
         },
-        containerColor = BackgroundScaffoldColor
+        backgroundColor = BackgroundScaffoldColor
     ) { paddingValues: PaddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(
-                    start = paddingValues.calculateStartPadding(localDirection),
-                    end = paddingValues.calculateEndPadding(localDirection),
-                    bottom = paddingValues.calculateBottomPadding()
-                ),
+                .padding(paddingValues),
             state = lazyListState
         ) {
             item {
@@ -134,8 +83,28 @@ fun ProfileScreen(
                         contentScale = ContentScale.FillWidth
                     )
                     Column {
+                        TopAppBar(
+                            title = {
+                                Text(
+                                    text = "Profile",
+                                    color = Whiteish,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            },
+                            backgroundColor = Color.Transparent,
+                            actions = {
+                                IconButton(onClick = onIconEditClick) {
+                                    Icon(
+                                        painterResource(id = R.drawable.ic_edit),
+                                        contentDescription = "Edit Profile",
+                                        tint = Whiteish
+                                    )
+                                }
+                            },
+                            elevation = 0.dp
+                        )
                         Spacer(
-                            Modifier.height(paddingValues.calculateTopPadding() + 16.dp)
+                            Modifier.height(20.dp)
                         )
                         ProfileCard(
                             modifier = Modifier
@@ -246,9 +215,8 @@ fun ProfileCard(
 ) {
     Card(
         modifier = modifier,
-        colors = CardDefaults.cardColors(
-            containerColor = Whiteish
-        )
+        backgroundColor = Whiteish,
+        shape = RoundedCornerShape(12.dp)
     ) {
         Column(
             modifier = Modifier

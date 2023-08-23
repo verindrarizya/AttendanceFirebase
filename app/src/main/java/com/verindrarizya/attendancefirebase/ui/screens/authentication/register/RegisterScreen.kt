@@ -1,6 +1,7 @@
 package com.verindrarizya.attendancefirebase.ui.screens.authentication.register
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -8,10 +9,10 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -155,10 +156,14 @@ fun RegisterScreen(
                 },
                 shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = ButtonBgYellow,
+                    backgroundColor = ButtonBgYellow,
                     contentColor = ButtonTextDarkBlueGrayish
                 ),
-                enabled = buttonRegisterEnabled
+                enabled = buttonRegisterEnabled,
+                contentPadding = PaddingValues(
+                    horizontal = 16.dp,
+                    vertical = 14.dp
+                )
             ) {
                 if (registerResourceState is ResourceState.Loading) {
                     CircularProgressIndicator(

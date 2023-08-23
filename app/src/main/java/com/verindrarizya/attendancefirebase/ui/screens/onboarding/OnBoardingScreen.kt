@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalFoundationApi::class)
-
 package com.verindrarizya.attendancefirebase.ui.screens.onboarding
 
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -27,15 +25,16 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -59,7 +58,9 @@ import com.verindrarizya.attendancefirebase.ui.theme.PagerIndicatorActive
 import com.verindrarizya.attendancefirebase.ui.theme.PagerIndicatorInactive
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
+import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -67,38 +68,47 @@ fun OnBoardingScreen(
     modifier: Modifier = Modifier,
     onButtonStartedClicked: () -> Unit,
 ) {
-    val pageCount = remember { onBoardingPagerItemContentContents.size }
-    val pagerState = rememberPagerState()
-    var flagAnimate by rememberSaveable { mutableStateOf(true) }
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        initialPageOffsetFraction = 0f,
+        pageCount = { onBoardingPagerItemContentContents.size }
+    )
 
     val isLastPage by remember {
         derivedStateOf {
-            pagerState.currentPage == pageCount - 1
+            pagerState.currentPage == pagerState.pageCount - 1
         }
     }
 
+    var hasReachLastPage by rememberSaveable { mutableStateOf(false) }
+
     val buttonAlpha by animateFloatAsState(
-        if (isLastPage) 1f else 0f
+        if (isLastPage) 1f else 0f,
+        label = "button alpha"
     )
 
     val buttonOffset by animateDpAsState(
-        if (isLastPage) 0.dp else 16.dp
+        if (isLastPage) 0.dp else 16.dp,
+        label = "button offset"
     )
 
-    LaunchedEffect(Unit) {
-        if (flagAnimate) {
-            for (i in 0 until pageCount) {
-                delay(1_500)
+    val animationScope = rememberCoroutineScope()
+
+    LaunchedEffect(pagerState.currentPage) {
+        if (pagerState.currentPage == pagerState.pageCount - 1) {
+            hasReachLastPage = true
+        }
+        delay(3_000)
+        if (!hasReachLastPage) {
+            animationScope.launch {
                 pagerState.animateScrollToPage(
-                    page = i,
+                    page = pagerState.currentPage + 1,
                     animationSpec = tween(
                         durationMillis = 500,
                         easing = FastOutSlowInEasing
                     )
                 )
             }
-
-            flagAnimate = false
         }
     }
 
@@ -111,7 +121,7 @@ fun OnBoardingScreen(
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(horizontal = 16.dp),
-            text = "${pagerState.currentPage + 1}/$pageCount",
+            text = "${pagerState.currentPage + 1}/${pagerState.pageCount}",
             textAlign = TextAlign.End,
             fontFamily = MontserratFamily,
             fontWeight = FontWeight.SemiBold,
@@ -126,16 +136,14 @@ fun OnBoardingScreen(
                 horizontal = 24.dp,
             ),
             pageSpacing = 24.dp,
-            pageCount = pageCount,
             state = pagerState
-        ) { pageNumber: Int ->
+        ) {
             OnBoardingPagerItem(
                 modifier = Modifier.fillMaxHeight(),
-                onBoardingPagerItemContent = onBoardingPagerItemContentContents[pageNumber]
+                onBoardingPagerItemContent = onBoardingPagerItemContentContents[it]
             )
         }
         PagerIndicator(
-            pageCount = pageCount,
             pagerState = pagerState,
         )
         Spacer(Modifier.height(40.dp))
@@ -148,9 +156,11 @@ fun OnBoardingScreen(
             onClick = onButtonStartedClicked,
             shape = RoundedCornerShape(10.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = ButtonBgBlue,
+                backgroundColor = ButtonBgBlue,
+                contentColor = Whiteish
             ),
             enabled = isLastPage,
+            contentPadding = PaddingValues(16.dp)
         ) {
             Text(
                 text = stringResource(id = R.string.started),
@@ -193,7 +203,6 @@ fun OnBoardingPagerItem(
 @Composable
 fun PagerIndicator(
     modifier: Modifier = Modifier,
-    pageCount: Int,
     pagerState: PagerState
 ) {
     Row(
@@ -202,7 +211,7 @@ fun PagerIndicator(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        repeat(pageCount) { iteration: Int ->
+        repeat(pagerState.pageCount) { iteration: Int ->
             PagerIndicatorItem(isSelected = pagerState.currentPage == iteration)
         }
     }
@@ -220,7 +229,8 @@ fun PagerIndicatorItem(
         animationSpec = tween(
             durationMillis = 300,
             easing = FastOutSlowInEasing
-        )
+        ),
+        label = "Size"
     )
 
     Box(

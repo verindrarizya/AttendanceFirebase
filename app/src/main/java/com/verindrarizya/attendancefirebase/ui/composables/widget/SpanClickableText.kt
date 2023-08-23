@@ -1,7 +1,7 @@
 package com.verindrarizya.attendancefirebase.ui.composables.widget
 
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
