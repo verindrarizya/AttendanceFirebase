@@ -1,12 +1,11 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -74,16 +73,16 @@ fun DashboardBottomNav(
     bottomNavItems: List<DashboardItemScreen> = dashboardItems,
     onBottomNavItemClick: (DashboardItemScreen) -> Unit,
 ) {
-    NavigationBar(
+    BottomNavigation(
         modifier = modifier,
-        containerColor = Whiteish
+        backgroundColor = Whiteish
     ) {
         bottomNavItems.forEach {
             val isSelected = currentDestination?.hierarchy?.any { navDestination ->
                 navDestination.route == it.routeName
             } == true
 
-            NavigationBarItem(
+            BottomNavigationItem(
                 icon = {
                     Icon(
                         painter = painterResource(it.icon),
@@ -107,10 +106,6 @@ fun DashboardBottomNav(
                 },
                 selected = isSelected,
                 onClick = { onBottomNavItemClick(it) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Whiteish,
-                    indicatorColor = Whiteish
-                )
             )
         }
     }

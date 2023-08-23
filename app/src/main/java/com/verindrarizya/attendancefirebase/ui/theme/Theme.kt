@@ -1,13 +1,12 @@
 package com.verindrarizya.attendancefirebase.ui.theme
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 
-private val LightColorScheme = lightColorScheme(
+private val LightColorScheme = lightColors(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -26,7 +25,7 @@ fun AttendanceFirebaseTheme(
 ) {
 
     MaterialTheme(
-        colorScheme = LightColorScheme,
+        colors = LightColorScheme,
         typography = Typography,
         content = content
     )
