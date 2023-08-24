@@ -1,6 +1,6 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.home
 
-import com.verindrarizya.attendancefirebase.ui.screens.model.Office
+import com.verindrarizya.attendancefirebase.ui.model.Office
 import com.verindrarizya.attendancefirebase.util.ResourceState
 
 sealed interface HomeUiState {

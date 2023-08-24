@@ -44,7 +44,7 @@ import com.verindrarizya.attendancefirebase.ui.composables.widget.CircleButton
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.LoadingDialog
 import com.verindrarizya.attendancefirebase.ui.composables.widget.OfficeImage
-import com.verindrarizya.attendancefirebase.ui.screens.model.Office
+import com.verindrarizya.attendancefirebase.ui.model.Office
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.BackgroundScaffoldColor

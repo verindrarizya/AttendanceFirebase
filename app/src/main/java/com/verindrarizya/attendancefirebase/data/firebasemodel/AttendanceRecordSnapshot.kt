@@ -1,8 +1,8 @@
 package com.verindrarizya.attendancefirebase.data.firebasemodel
 
 import com.google.firebase.database.IgnoreExtraProperties
-import com.verindrarizya.attendancefirebase.ui.screens.model.AttendanceRecord
-import com.verindrarizya.attendancefirebase.ui.screens.model.Office
+import com.verindrarizya.attendancefirebase.ui.model.AttendanceRecord
+import com.verindrarizya.attendancefirebase.ui.model.Office
 
 @IgnoreExtraProperties
 data class AttendanceRecordSnapshot(
