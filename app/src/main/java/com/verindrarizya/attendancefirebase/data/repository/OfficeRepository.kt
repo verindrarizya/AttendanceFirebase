@@ -6,7 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.verindrarizya.attendancefirebase.data.firebasemodel.OfficeSnapshot
 import com.verindrarizya.attendancefirebase.data.firebasemodel.toOffice
-import com.verindrarizya.attendancefirebase.ui.screens.model.Office
+import com.verindrarizya.attendancefirebase.ui.model.Office
 import com.verindrarizya.attendancefirebase.util.ResourceState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow

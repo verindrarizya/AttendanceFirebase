@@ -2,7 +2,6 @@ package com.verindrarizya.attendancefirebase.ui.composables.widget
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -17,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -197,6 +197,7 @@ fun IconListItem(
     )
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ListItem(
     modifier: Modifier = Modifier,
@@ -211,10 +212,8 @@ fun ListItem(
 ) {
     Card(
         modifier = modifier
-            .clickable {
-                onClick()
-            }
             .fillMaxWidth(),
+        onClick = onClick,
         shape = RoundedCornerShape(10.dp),
         backgroundColor = backgroundColor,
         border = border
@@ -283,7 +282,7 @@ fun ListItem(
                     color = headerTextColor,
                     fontWeight = FontWeight.SemiBold
                 )
-                if (subHeader != null) {
+                if (!subHeader.isNullOrBlank()) {
                     Text(
                         text = subHeader,
                         fontSize = 12.sp,

@@ -8,8 +8,8 @@ import com.google.firebase.database.ValueEventListener
 import com.verindrarizya.attendancefirebase.data.firebasemodel.AttendanceRecordSnapshot
 import com.verindrarizya.attendancefirebase.data.firebasemodel.toAttendance
 import com.verindrarizya.attendancefirebase.data.firebasemodel.toOffice
-import com.verindrarizya.attendancefirebase.ui.screens.model.AttendanceRecord
-import com.verindrarizya.attendancefirebase.ui.screens.model.Office
+import com.verindrarizya.attendancefirebase.ui.model.AttendanceRecord
+import com.verindrarizya.attendancefirebase.ui.model.Office
 import com.verindrarizya.attendancefirebase.util.AttendanceState
 import com.verindrarizya.attendancefirebase.util.CalendarUtils
 import com.verindrarizya.attendancefirebase.util.ResourceState

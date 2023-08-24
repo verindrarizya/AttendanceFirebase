@@ -53,7 +53,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
-import com.verindrarizya.attendancefirebase.ui.screens.model.AttendanceRecord
+import com.verindrarizya.attendancefirebase.ui.model.AttendanceRecord
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.BgGray

@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.ui.screens.model
+package com.verindrarizya.attendancefirebase.ui.model
 
 data class Office(
     val id: Int,

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.verindrarizya.attendancefirebase.data.repository.AttendanceRepository
 import com.verindrarizya.attendancefirebase.data.repository.OfficeRepository
-import com.verindrarizya.attendancefirebase.ui.screens.model.Office
+import com.verindrarizya.attendancefirebase.ui.model.Office
 import com.verindrarizya.attendancefirebase.util.AttendanceState
 import com.verindrarizya.attendancefirebase.util.ResourceState
 import com.verindrarizya.attendancefirebase.util.TodayAttendanceState
