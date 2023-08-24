@@ -26,7 +26,7 @@ val Typography = Typography(
     ),
     button = TextStyle(
         fontFamily = MontserratFamily,
-        fontWeight = FontWeight.Medium,
+        fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
         lineHeight = 20.sp,
         letterSpacing = 0.5.sp
@@ -44,5 +44,9 @@ val Typography = Typography(
         fontSize = 11.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
+    ),
+    body2 = TextStyle(
+        fontFamily = MontserratFamily,
+        fontWeight = FontWeight.Medium
     )
 )

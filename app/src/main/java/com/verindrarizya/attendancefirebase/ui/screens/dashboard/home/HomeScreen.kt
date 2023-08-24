@@ -51,6 +51,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.R
+import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.CircleButton
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.LoadingDialog
@@ -61,7 +62,9 @@ import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.BackgroundScaffoldColor
 import com.verindrarizya.attendancefirebase.ui.theme.BgMustard
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgGreen
+import com.verindrarizya.attendancefirebase.ui.theme.OrangeRedish
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
+import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
 import com.verindrarizya.attendancefirebase.util.ResourceState
 
@@ -240,7 +243,7 @@ fun HomeScreen(
                                     items(
                                         homeUiState.listOfOfficeResourceState.data,
                                         key = { it.id }) {
-                                        ListItem(
+                                        AsyncImageListItem(
                                             modifier = Modifier
                                                 .padding(
                                                     start = 16.dp,
@@ -257,14 +260,9 @@ fun HomeScreen(
                                             subHeaderTextColor = if (it == homeUiState.selectedOffice) {
                                                 Whiteish
                                             } else {
-                                                TextDarkBlue
+                                                TextGray
                                             },
-                                            imageSlot = {
-                                                OfficeImage(
-                                                    imageUrl = it.imageUrl,
-                                                    imageContentDescription = "${it.name} Office Image"
-                                                )
-                                            },
+                                            imageUrl = it.imageUrl,
                                             backgroundColor = if (it == homeUiState.selectedOffice) {
                                                 AttBlue
                                             } else {
@@ -288,9 +286,9 @@ fun HomeScreen(
                                                 bottom = 10.dp
                                             ),
                                         header = it.name,
-                                        headerTextColor = Whiteish,
+                                        headerTextColor = TextDarkBlue,
                                         subHeader = it.address,
-                                        subHeaderTextColor = Whiteish,
+                                        subHeaderTextColor = TextDarkBlue,
                                         imageSlot = {
                                             OfficeImage(
                                                 imageUrl = it.imageUrl,
@@ -336,7 +334,9 @@ fun ErrorLayout(
         )
         Spacer(Modifier.height(12.dp))
         Text(
-            text = "Error, Please Refresh"
+            text = "Error, Please Refresh",
+            fontWeight = FontWeight.SemiBold,
+            color = OrangeRedish
         )
     }
 }
