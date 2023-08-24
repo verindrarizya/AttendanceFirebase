@@ -9,14 +9,13 @@ import com.verindrarizya.attendancefirebase.util.AttendanceState
 import com.verindrarizya.attendancefirebase.util.ResourceState
 import com.verindrarizya.attendancefirebase.util.TodayAttendanceState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -26,19 +25,25 @@ import javax.inject.Inject
 private data class HomeViewModelState(
     val todayAttendanceState: TodayAttendanceState,
     val isLoading: Boolean = true,
+    val isRefreshing: Boolean = false,
+    val isError: Boolean = false,
     val listOfOfficeResourceState: ResourceState<List<Office>> = ResourceState.Loading,
     val selectedOffice: Office? = null
 ) {
 
     fun toUiState(): HomeUiState {
-        return if (todayAttendanceState == TodayAttendanceState.CheckedIn) {
+        return if (todayAttendanceState is TodayAttendanceState.CheckedIn) {
             HomeUiState.CheckOutUiState(
                 isLoading = isLoading,
+                isRefreshing = isRefreshing,
+                isError = isError,
                 selectedOffice = selectedOffice!!
             )
         } else {
             HomeUiState.CheckInUiState(
                 isLoading = isLoading,
+                isRefreshing = isRefreshing,
+                isError = isError,
                 listOfOfficeResourceState = listOfOfficeResourceState,
                 selectedOffice = selectedOffice
             )
@@ -64,71 +69,72 @@ class HomeViewModel @Inject constructor(
         .map { it.toUiState() }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
             initialValue = _homeViewModelState.value.toUiState()
         )
 
-    private val _attendanceRecordFlow: MutableSharedFlow<String?> = MutableSharedFlow()
-    val attendanceRecordFlow: SharedFlow<String?> = _attendanceRecordFlow.asSharedFlow()
+    private val _messageFlow: MutableSharedFlow<String> = MutableSharedFlow()
+    val messageFlow: SharedFlow<String> = _messageFlow.asSharedFlow()
 
     init {
-        refresh()
+        getTodayAttendanceStatus()
+        getOffices()
     }
 
-    fun refresh() {
+    private fun getTodayAttendanceStatus() {
         viewModelScope.launch {
-            attendanceRepository.checkTodayAttendanceState().collect {
-                when (it) {
-                    is ResourceState.Loading -> {
-                        _homeViewModelState.update { state ->
-                            state.copy(
-                                isLoading = true
-                            )
+            attendanceRepository.checkTodayAttendanceState().collect { resourceState ->
+                when (resourceState) {
+                    is ResourceState.Error -> {
+                        _homeViewModelState.update {
+                            it.copy(isLoading = false, isError = true)
                         }
+                        _messageFlow.emit(resourceState.message)
+                    }
+
+                    ResourceState.Init -> { /* Do Nothing */
+                    }
+
+                    ResourceState.Loading -> {
+                        _homeViewModelState.update { it.copy(isLoading = true, isError = false) }
                     }
 
                     is ResourceState.Success -> {
-                        processTodayAttendanceState(it)
-                    }
-
-                    is ResourceState.Error -> {
-                        _homeViewModelState.update { it.copy(isLoading = false) }
-                        _attendanceRecordFlow.emit(it.message)
-                    }
-
-                    is ResourceState.Init -> { /* Do Nothing */
+                        processTodayAttendanceState(resourceState.data)
                     }
                 }
             }
         }
     }
 
-    private suspend fun processTodayAttendanceState(state: ResourceState.Success<TodayAttendanceState>) {
+    private fun processTodayAttendanceState(todayAttendanceState: TodayAttendanceState) {
         _homeViewModelState.update {
             it.copy(
                 isLoading = false,
-                todayAttendanceState = state.data,
+                todayAttendanceState = todayAttendanceState,
+                selectedOffice = if (todayAttendanceState is TodayAttendanceState.CheckedIn)
+                    todayAttendanceState.office
+                else
+                    null
             )
-        }
-
-        if (_homeViewModelState.value.selectedOffice == null && state.data == TodayAttendanceState.CheckedIn) {
-            _homeViewModelState.update {
-                it.copy(selectedOffice = attendanceRepository.officeLocation.first())
-            }
-        }
-
-        if (state.data != TodayAttendanceState.CheckedIn) {
-            getOffices()
         }
     }
 
-    private suspend fun getOffices() {
-        officeRepository.getOffices().collect {
-            _homeViewModelState.update { state ->
-                state.copy(
-                    listOfOfficeResourceState = it
-                )
+    private fun getOffices() {
+        viewModelScope.launch {
+            officeRepository.getOffices().collect { officesResource ->
+                _homeViewModelState.update { it.copy(listOfOfficeResourceState = officesResource) }
             }
+        }
+    }
+
+    fun refresh() {
+        viewModelScope.launch {
+            _homeViewModelState.update { it.copy(isRefreshing = true) }
+            getTodayAttendanceStatus()
+            getOffices()
+            delay(200)
+            _homeViewModelState.update { it.copy(isRefreshing = false) }
         }
     }
 
@@ -139,28 +145,27 @@ class HomeViewModel @Inject constructor(
     fun recordAttendance() {
         viewModelScope.launch {
             if (_homeViewModelState.value.selectedOffice == null) {
-                _attendanceRecordFlow.emit("Select an Office")
-                this.cancel()
+                _messageFlow.emit("Please Select an Office")
                 return@launch
             }
 
-            when (_homeViewModelState.value.todayAttendanceState) {
-                TodayAttendanceState.NoRecord -> {
+            when (val attendanceState = _homeViewModelState.value.todayAttendanceState) {
+                is TodayAttendanceState.CheckedIn -> {
                     recordNewAttendance(
-                        _homeViewModelState.value.selectedOffice!!,
-                        AttendanceState.CheckIn
-                    )
-                }
-
-                TodayAttendanceState.CheckedIn -> {
-                    recordNewAttendance(
-                        _homeViewModelState.value.selectedOffice!!,
-                        AttendanceState.CheckOut
+                        attendanceState = AttendanceState.CheckOut,
+                        office = attendanceState.office
                     )
                 }
 
                 TodayAttendanceState.CheckedOut -> {
-                    _attendanceRecordFlow.emit("Today Attendance Already Recorded")
+                    _messageFlow.emit("Today Attendance Already Recorded")
+                }
+
+                TodayAttendanceState.NoRecord -> {
+                    recordNewAttendance(
+                        office = _homeViewModelState.value.selectedOffice!!,
+                        attendanceState = AttendanceState.CheckIn
+                    )
                 }
             }
         }
@@ -173,8 +178,8 @@ class HomeViewModel @Inject constructor(
         attendanceRepository.recordAttendance(office, attendanceState).collect { resourceState ->
             when (resourceState) {
                 is ResourceState.Error -> {
-                    _attendanceRecordFlow.emit(resourceState.message)
                     _homeViewModelState.update { it.copy(isLoading = false) }
+                    _messageFlow.emit(resourceState.message)
                 }
 
                 ResourceState.Init -> { /* Do Nothing */
@@ -185,9 +190,8 @@ class HomeViewModel @Inject constructor(
                 }
 
                 is ResourceState.Success -> {
-                    refresh()
                     _homeViewModelState.update { it.copy(isLoading = false) }
-                    _attendanceRecordFlow.emit(resourceState.data)
+                    _messageFlow.emit(resourceState.data)
                 }
             }
         }
