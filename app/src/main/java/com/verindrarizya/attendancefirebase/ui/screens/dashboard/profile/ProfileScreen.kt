@@ -191,7 +191,7 @@ fun ProfileScreen(
                                 end = 16.dp,
                                 bottom = 12.dp
                             ),
-                        header = "No. Karyawan",
+                        header = "Employee ID",
                         subHeader = profileUiState.employeeNumber,
                         painter = painterResource(R.drawable.ic_employee_id)
                     )
@@ -204,7 +204,7 @@ fun ProfileScreen(
                                 end = 16.dp,
                                 bottom = 12.dp
                             ),
-                        header = "Alamat",
+                        header = "Address",
                         subHeader = profileUiState.address,
                         painter = painterResource(R.drawable.ic_address)
                     )

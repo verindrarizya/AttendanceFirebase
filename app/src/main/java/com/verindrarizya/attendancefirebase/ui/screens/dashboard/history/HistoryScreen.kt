@@ -188,7 +188,7 @@ fun HistoryScreen(
                                         ),
                                         text = stringResource(it.nameStrResource),
                                         color = if (it == selectedHistoryDateFilter) TextDarkBlue else TextGray,
-                                        fontWeight = FontWeight.Medium
+                                        fontSize = 14.sp
                                     )
                                 },
                                 colors = ChipDefaults.filterChipColors(

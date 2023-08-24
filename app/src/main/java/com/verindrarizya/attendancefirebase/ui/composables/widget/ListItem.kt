@@ -240,6 +240,7 @@ fun ListItem(
                         text = subHeader,
                         fontSize = 12.sp,
                         color = subHeaderTextColor,
+                        fontWeight = FontWeight.Medium
                     )
                 }
             }
