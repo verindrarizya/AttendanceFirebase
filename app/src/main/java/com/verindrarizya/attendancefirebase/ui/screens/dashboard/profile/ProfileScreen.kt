@@ -42,6 +42,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.verindrarizya.attendancefirebase.R
+import com.verindrarizya.attendancefirebase.ui.composables.widget.IconListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.LoadingDialog
 import com.verindrarizya.attendancefirebase.ui.composables.widget.RoundedCornerIcon
@@ -185,7 +186,7 @@ fun ProfileScreen(
                     )
                 }
                 item {
-                    ListItem(
+                    IconListItem(
                         modifier = Modifier
                             .padding(
                                 start = 16.dp,
@@ -194,15 +195,11 @@ fun ProfileScreen(
                             ),
                         header = "No. Karyawan",
                         subHeader = profileUiState.employeeNumber,
-                        imageSlot = {
-                            RoundedCornerIcon(
-                                painter = painterResource(R.drawable.ic_employee_id)
-                            )
-                        }
+                        painter = painterResource(R.drawable.ic_employee_id)
                     )
                 }
                 item {
-                    ListItem(
+                    IconListItem(
                         modifier = Modifier
                             .padding(
                                 start = 16.dp,
@@ -211,15 +208,11 @@ fun ProfileScreen(
                             ),
                         header = "Alamat",
                         subHeader = profileUiState.address,
-                        imageSlot = {
-                            RoundedCornerIcon(
-                                painter = painterResource(R.drawable.ic_address)
-                            )
-                        }
+                        painter = painterResource(R.drawable.ic_address)
                     )
                 }
                 item {
-                    ListItem(
+                    IconListItem(
                         modifier = Modifier
                             .padding(
                                 start = 16.dp,
@@ -227,16 +220,12 @@ fun ProfileScreen(
                                 bottom = 12.dp
                             ),
                         header = "Change Password",
-                        imageSlot = {
-                            RoundedCornerIcon(
-                                painter = painterResource(R.drawable.ic_lock)
-                            )
-                        },
+                        painter = painterResource(R.drawable.ic_lock),
                         onClick = onChangePasswordClick
                     )
                 }
                 item {
-                    ListItem(
+                    IconListItem(
                         modifier = Modifier
                             .padding(
                                 start = 16.dp,
@@ -244,11 +233,7 @@ fun ProfileScreen(
                                 bottom = 12.dp
                             ),
                         header = "Sign Out",
-                        imageSlot = {
-                            RoundedCornerIcon(
-                                painter = painterResource(R.drawable.ic_logout)
-                            )
-                        },
+                        painter = painterResource(R.drawable.ic_logout),
                         onClick = onSignOutClick
                     )
                 }
