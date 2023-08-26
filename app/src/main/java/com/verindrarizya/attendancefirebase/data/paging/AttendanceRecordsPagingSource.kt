@@ -20,18 +20,6 @@ class AttendanceRecordsPagingSource(
 
     override suspend fun load(params: LoadParams<String>): LoadResult<String, AttendanceRecord> {
         try {
-            if (params.key != null && CalendarUtils.isFirstDatePastOrEqualSecondDate(
-                    startDate,
-                    params.key!!
-                )
-            ) {
-                return LoadResult.Page(
-                    data = emptyList(),
-                    prevKey = null,
-                    nextKey = null
-                )
-            }
-
             val currentEndDate = params.key ?: endDate
 
             val queryAttendanceRecord = db
@@ -51,6 +39,14 @@ class AttendanceRecordsPagingSource(
             val lastAttendanceRecordDate = attendanceRecords.last().date
             val nextKey = CalendarUtils.getPreviousDayDate(lastAttendanceRecordDate)
 
+            if (nextKey == params.key) {
+                return LoadResult.Page(
+                    data = emptyList(),
+                    prevKey = null,
+                    nextKey = null
+                )
+            }
+
             return LoadResult.Page(
                 data = attendanceRecords,
                 prevKey = null,
@@ -60,7 +56,7 @@ class AttendanceRecordsPagingSource(
             return LoadResult.Page(
                 data = emptyList(),
                 prevKey = null,
-                nextKey = "null"
+                nextKey = null
             )
         } catch (e: Exception) {
             return LoadResult.Error(e)

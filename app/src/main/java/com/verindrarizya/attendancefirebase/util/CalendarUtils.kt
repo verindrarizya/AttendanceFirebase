@@ -49,12 +49,4 @@ object CalendarUtils {
         val previousDate = date.minusDays(1)
         return previousDate.format(dateFormatter)
     }
-
-    fun isFirstDatePastOrEqualSecondDate(firstDate: String, secondDate: String): Boolean {
-        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val date1 = LocalDate.parse(firstDate, dateFormatter)
-        val date2 = LocalDate.parse(secondDate, dateFormatter)
-
-        return date1.isAfter(date2) || date1.isEqual(date2)
-    }
 }
