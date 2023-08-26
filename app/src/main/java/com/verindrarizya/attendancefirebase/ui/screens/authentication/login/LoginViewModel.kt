@@ -5,7 +5,10 @@ import androidx.lifecycle.viewModelScope
 import com.verindrarizya.attendancefirebase.data.repository.AuthRepository
 import com.verindrarizya.attendancefirebase.util.ResourceState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,6 +26,9 @@ class LoginViewModel @Inject constructor(
         MutableStateFlow(ResourceState.Init)
     val loginResourceState = _loginResourceState.asStateFlow()
 
+    private val _message: MutableSharedFlow<String> = MutableSharedFlow()
+    val message: SharedFlow<String> = _message.asSharedFlow()
+
     fun onEmailChanged(newEmailValue: String) {
         _loginUiState.update { it.copy(email = newEmailValue) }
     }
@@ -35,6 +41,9 @@ class LoginViewModel @Inject constructor(
         loginUiState.value.apply {
             viewModelScope.launch {
                 authRepository.login(email, password).collect {
+                    if (it is ResourceState.Error) {
+                        _message.emit(it.message)
+                    }
                     _loginResourceState.value = it
                 }
             }
