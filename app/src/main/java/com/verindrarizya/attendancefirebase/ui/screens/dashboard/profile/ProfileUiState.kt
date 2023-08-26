@@ -6,5 +6,6 @@ data class ProfileUiState(
     val username: String = "",
     val jobTitle: String = "",
     val employeeNumber: String = "",
-    val address: String = ""
+    val address: String = "",
+    val email: String = ""
 )

@@ -24,6 +24,8 @@ class ProfileRepository @Inject constructor(
 
     fun getUsername(): String = auth.currentUser?.displayName ?: ""
 
+    fun getEmail(): String = auth.currentUser?.email ?: ""
+
     fun getProfileData(): Flow<ResourceState<UserProfile>> = callbackFlow {
         trySend(ResourceState.Loading)
 

@@ -25,7 +25,11 @@ class HistoryViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val attendanceRecordPaging = _selectedHistoryDateFilter.flatMapLatest {
         Pager(
-            PagingConfig(pageSize = 10)
+            PagingConfig(
+                pageSize = 10,
+                initialLoadSize = 10,
+                prefetchDistance = 1
+            )
         ) {
             attendanceRepository.getAttendanceRecordsPagingSource(
                 startDate = it.startDate,

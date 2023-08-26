@@ -29,12 +29,18 @@ class ProfileViewModel @Inject constructor(
 
     init {
         getUsername()
+        getEmail()
         getUserProfile()
     }
 
     private fun getUsername() {
         val username = profileRepository.getUsername()
         _profileUiState.update { it.copy(username = username) }
+    }
+
+    private fun getEmail() {
+        val email = profileRepository.getEmail()
+        _profileUiState.update { it.copy(email = email) }
     }
 
     private fun getUserProfile() {

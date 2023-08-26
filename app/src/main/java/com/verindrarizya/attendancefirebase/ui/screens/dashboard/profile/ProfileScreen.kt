@@ -70,7 +70,7 @@ fun ProfileScreen(
         profileUiState = profileUiState,
         onRefresh = viewModel::refresh,
         onSignOutClick = viewModel::signOut,
-        onChangePasswordClick = {},
+        onAboutInfoClick = {},
         onIconEditClick = {
             Toast.makeText(
                 context,
@@ -88,8 +88,8 @@ fun ProfileScreen(
     profileUiState: ProfileUiState,
     onRefresh: () -> Unit,
     onSignOutClick: () -> Unit,
-    onChangePasswordClick: () -> Unit,
-    onIconEditClick: () -> Unit
+    onIconEditClick: () -> Unit,
+    onAboutInfoClick: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
     val refreshState = rememberPullRefreshState(
@@ -191,6 +191,19 @@ fun ProfileScreen(
                                 end = 16.dp,
                                 bottom = 12.dp
                             ),
+                        header = "Email",
+                        subHeader = profileUiState.email,
+                        painter = painterResource(R.drawable.ic_email)
+                    )
+                }
+                item {
+                    IconListItem(
+                        modifier = Modifier
+                            .padding(
+                                start = 16.dp,
+                                end = 16.dp,
+                                bottom = 12.dp
+                            ),
                         header = "Employee ID",
                         subHeader = profileUiState.employeeNumber,
                         painter = painterResource(R.drawable.ic_employee_id)
@@ -217,9 +230,9 @@ fun ProfileScreen(
                                 end = 16.dp,
                                 bottom = 12.dp
                             ),
-                        header = "Change Password",
-                        painter = painterResource(R.drawable.ic_lock),
-                        onClick = onChangePasswordClick
+                        header = "About this app",
+                        painter = painterResource(R.drawable.ic_info),
+                        onClick = onAboutInfoClick
                     )
                 }
                 item {
@@ -297,8 +310,8 @@ fun ProfileScreenPreview() {
             ),
             onRefresh = {},
             onSignOutClick = {},
-            onChangePasswordClick = {},
-            onIconEditClick = {}
+            onIconEditClick = {},
+            onAboutInfoClick = {}
         )
     }
 }
