@@ -1,6 +1,8 @@
 package com.verindrarizya.attendancefirebase.util
 
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
 
@@ -40,4 +42,11 @@ object CalendarUtils {
             calendar.add(Calendar.YEAR, -1)
             return dateFormat.format(calendar.time)
         }
+
+    fun getPreviousDayDate(inputDate: String): String {
+        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val date = LocalDate.parse(inputDate, dateFormatter)
+        val previousDate = date.minusDays(1)
+        return previousDate.format(dateFormatter)
+    }
 }

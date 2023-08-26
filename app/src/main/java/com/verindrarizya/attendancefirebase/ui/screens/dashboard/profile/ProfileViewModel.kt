@@ -1,6 +1,5 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.verindrarizya.attendancefirebase.data.repository.AuthRepository
@@ -79,10 +78,5 @@ class ProfileViewModel @Inject constructor(
 
     fun signOut() {
         authRepository.signOut()
-    }
-
-    override fun onCleared() {
-        Log.d("ProfileTag", "onCleared: called")
-        super.onCleared()
     }
 }

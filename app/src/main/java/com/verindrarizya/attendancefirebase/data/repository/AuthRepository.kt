@@ -1,6 +1,5 @@
 package com.verindrarizya.attendancefirebase.data.repository
 
-import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -13,8 +12,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import javax.inject.Singleton
-
-private const val TAG = "AuthTag"
 
 @Singleton
 class AuthRepository @Inject constructor(
@@ -77,14 +74,10 @@ class AuthRepository @Inject constructor(
     ): Flow<ResourceState<String>> = callbackFlow {
         trySend(ResourceState.Loading)
 
-        Log.d(TAG, "login: Loading $email $password")
-
         val listener = OnCompleteListener<AuthResult> {
             if (it.isSuccessful) {
-                Log.d(TAG, "login: Success")
                 trySend(ResourceState.Success("Login Success"))
             } else {
-                Log.d(TAG, "login: Error ${it.exception?.message}")
                 trySend(ResourceState.Error(it.exception?.message ?: "Login Failed"))
             }
         }
