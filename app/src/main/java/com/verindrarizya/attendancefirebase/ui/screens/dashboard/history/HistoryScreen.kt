@@ -19,6 +19,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ChipDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.FilterChip
 import androidx.compose.material.Icon
@@ -40,12 +41,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
@@ -55,7 +58,6 @@ import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
 import com.verindrarizya.attendancefirebase.ui.model.AttendanceRecord
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
-import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.BgGray
 import com.verindrarizya.attendancefirebase.ui.theme.BgMustard
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgBlue
@@ -63,7 +65,6 @@ import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
 import com.verindrarizya.attendancefirebase.util.AttendanceState
-import com.verindrarizya.attendancefirebase.util.ResourceState
 
 private val listOfFilter: List<HistoryDateFilter> = listOf(
     HistoryDateFilter.Day(),
@@ -78,34 +79,32 @@ fun HistoryScreen(
     viewModel: HistoryViewModel = hiltViewModel()
 ) {
     val selectedHistoryDateFilter by viewModel.selectedHistoryDateFilter.collectAsStateWithLifecycle()
-    val attendanceRecordResourceState by viewModel.attendanceRecordResourceState.collectAsStateWithLifecycle()
+    val attendanceRecordsPaging = viewModel.attendanceRecordPaging.collectAsLazyPagingItems()
 
-    HistoryScreen(
+    HistoryScreenPaging(
         modifier = modifier,
         selectedHistoryDateFilter = selectedHistoryDateFilter,
-        onSelectHistoryDateFilter = { viewModel.selectHistoryDateFilter(it) },
-        onRefresh = {},
-        attendanceRecordResourceState = attendanceRecordResourceState,
-        onIconNotificationClick = {}
+        onSelectHistoryDateFilter = viewModel::selectHistoryDateFilter,
+        onRefresh = { attendanceRecordsPaging.refresh() },
+        onIconNotificationClick = {},
+        attendanceRecordsPaging = attendanceRecordsPaging
     )
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HistoryScreen(
-    modifier: Modifier = Modifier,
+fun HistoryScreenPaging(
+    modifier: Modifier,
     historyDateFilters: List<HistoryDateFilter> = listOfFilter,
     selectedHistoryDateFilter: HistoryDateFilter?,
     onSelectHistoryDateFilter: (HistoryDateFilter) -> Unit,
     onIconNotificationClick: () -> Unit,
     onRefresh: () -> Unit,
-    attendanceRecordResourceState: ResourceState<List<AttendanceRecord>>,
+    attendanceRecordsPaging: LazyPagingItems<AttendanceRecord>
 ) {
     Scaffold(
         modifier = modifier,
         backgroundColor = Color.Gray,
-        topBar = {
-        }
     ) { paddingValues: PaddingValues ->
         Box(
             modifier = Modifier
@@ -199,128 +198,169 @@ fun HistoryScreen(
                         }
                     }
                     Spacer(Modifier.height(12.dp))
-                    when (attendanceRecordResourceState) {
-                        is ResourceState.Error -> {
-                            val composition by rememberLottieComposition(
-                                spec = LottieCompositionSpec.Asset("error.json")
-                            )
-
-                            val progress by animateLottieCompositionAsState(
-                                composition = composition,
-                                iterations = LottieConstants.IterateForever,
-                                speed = 0.5f
-                            )
-
-                            Column(
-                                modifier = Modifier.fillMaxSize(),
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                LottieAnimation(
-                                    modifier = Modifier.size(200.dp),
-                                    composition = composition,
-                                    progress = { progress },
-                                    contentScale = ContentScale.FillWidth
-                                )
-                                Spacer(Modifier.height(12.dp))
-                                OutlinedButton(
-                                    onClick = { onRefresh() },
-                                    border = ButtonDefaults.outlinedBorder.copy(
-                                        brush = SolidColor(
-                                            value = ButtonBgBlue
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(
+                            horizontal = 16.dp
+                        )
+                    ) {
+                        attendanceRecordsPaging.apply {
+                            when (loadState.refresh) {
+                                is LoadState.Loading -> {
+                                    item {
+                                        val composition by rememberLottieComposition(
+                                            spec = LottieCompositionSpec.Asset("loading.json")
                                         )
-                                    )
-                                ) {
-                                    Text(
-                                        text = stringResource(R.string.refresh),
-                                        color = TextDarkBlue
-                                    )
-                                }
-                            }
-                        }
 
-                        ResourceState.Init -> { /* Do Nothing  */
-                        }
+                                        val progress by animateLottieCompositionAsState(
+                                            composition = composition,
+                                            iterations = LottieConstants.IterateForever
+                                        )
 
-                        ResourceState.Loading -> {
-                            val composition by rememberLottieComposition(
-                                spec = LottieCompositionSpec.Asset("loading.json")
-                            )
-
-                            val progress by animateLottieCompositionAsState(
-                                composition = composition,
-                                iterations = LottieConstants.IterateForever
-                            )
-
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                LottieAnimation(
-                                    composition = composition,
-                                    progress = { progress }
-                                )
-                            }
-                        }
-
-                        is ResourceState.Success -> {
-                            if (attendanceRecordResourceState.data.isEmpty()) {
-                                val composition by rememberLottieComposition(
-                                    spec = LottieCompositionSpec.Asset("empty.json")
-                                )
-
-                                val progress by animateLottieCompositionAsState(
-                                    composition = composition,
-                                    iterations = LottieConstants.IterateForever,
-                                    speed = 0.5f
-                                )
-
-                                Column(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.Center,
-                                    horizontalAlignment = Alignment.CenterHorizontally
-                                ) {
-                                    LottieAnimation(
-                                        modifier = Modifier.size(200.dp),
-                                        composition = composition,
-                                        progress = { progress },
-                                        contentScale = ContentScale.FillWidth
-                                    )
-                                    Spacer(Modifier.height(12.dp))
-                                    Text(
-                                        text = stringResource(R.string.empty_statement),
-                                        color = TextDarkBlue,
-                                        fontSize = 18.sp,
-                                        fontWeight = FontWeight.Medium,
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            } else {
-                                LazyColumn(
-                                    modifier = Modifier.fillMaxSize(),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                    contentPadding = PaddingValues(
-                                        bottom = 10.dp,
-                                        start = 16.dp,
-                                        end = 16.dp
-                                    )
-                                ) {
-                                    items(attendanceRecordResourceState.data) {
-                                        AsyncImageListItem(
-                                            header = "${it.status} - ${it.officeName}",
-                                            subHeader = "${it.date} ${it.hour}",
-                                            imageUrl = it.officeImageUrl,
-                                            backgroundColor = Color(0xFFFAF9F6),
-                                            border = BorderStroke(
-                                                width = 1.dp,
-                                                color = if (it.status == AttendanceState.CheckIn.value) {
-                                                    AttBlue
-                                                } else {
-                                                    BgMustard
-                                                }
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            LottieAnimation(
+                                                composition = composition,
+                                                progress = { progress }
                                             )
+                                        }
+                                    }
+                                }
+
+                                is LoadState.Error -> {
+                                    item {
+                                        val composition by rememberLottieComposition(
+                                            spec = LottieCompositionSpec.Asset("error.json")
                                         )
+
+                                        val progress by animateLottieCompositionAsState(
+                                            composition = composition,
+                                            iterations = LottieConstants.IterateForever,
+                                            speed = 0.5f
+                                        )
+
+                                        Column(
+                                            modifier = Modifier.fillMaxSize(),
+                                            verticalArrangement = Arrangement.Center,
+                                            horizontalAlignment = Alignment.CenterHorizontally
+                                        ) {
+                                            LottieAnimation(
+                                                modifier = Modifier.size(200.dp),
+                                                composition = composition,
+                                                progress = { progress },
+                                                contentScale = ContentScale.FillWidth
+                                            )
+                                            Spacer(Modifier.height(12.dp))
+                                            OutlinedButton(
+                                                onClick = { onRefresh() },
+                                                border = ButtonDefaults.outlinedBorder.copy(
+                                                    brush = SolidColor(
+                                                        value = ButtonBgBlue
+                                                    )
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.refresh),
+                                                    color = TextDarkBlue
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+
+                                is LoadState.NotLoading -> {
+                                    if (itemCount == 0) {
+                                        item {
+                                            val composition by rememberLottieComposition(
+                                                spec = LottieCompositionSpec.Asset("empty.json")
+                                            )
+
+                                            val progress by animateLottieCompositionAsState(
+                                                composition = composition,
+                                                iterations = LottieConstants.IterateForever,
+                                                speed = 0.5f
+                                            )
+
+                                            Column(
+                                                modifier = Modifier.fillMaxSize(),
+                                                verticalArrangement = Arrangement.Center,
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                LottieAnimation(
+                                                    modifier = Modifier.size(200.dp),
+                                                    composition = composition,
+                                                    progress = { progress },
+                                                    contentScale = ContentScale.FillWidth
+                                                )
+                                                Spacer(Modifier.height(12.dp))
+                                                Text(
+                                                    text = stringResource(R.string.empty_statement),
+                                                    color = TextDarkBlue,
+                                                    fontSize = 18.sp,
+                                                    fontWeight = FontWeight.Medium,
+                                                    textAlign = TextAlign.Center
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        items(itemSnapshotList) { attendanceRecord ->
+                                            attendanceRecord?.let {
+                                                AsyncImageListItem(
+                                                    header = "${it.status} - ${it.officeName}",
+                                                    subHeader = "${it.date} ${it.hour}",
+                                                    imageUrl = it.officeImageUrl,
+                                                    backgroundColor = Color(0xFFFAF9F6),
+                                                    border = BorderStroke(
+                                                        width = 1.dp,
+                                                        color = if (it.status == AttendanceState.CheckIn.value) {
+                                                            AttBlue
+                                                        } else {
+                                                            BgMustard
+                                                        }
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            when {
+                                loadState.append is LoadState.Loading -> {
+                                    item {
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+                                }
+
+                                loadState.append is LoadState.Error -> {
+                                    item {
+                                        Box(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            OutlinedButton(
+                                                onClick = { onRefresh() },
+                                                border = ButtonDefaults.outlinedBorder.copy(
+                                                    brush = SolidColor(
+                                                        value = ButtonBgBlue
+                                                    )
+                                                )
+                                            ) {
+                                                Text(
+                                                    text = stringResource(R.string.refresh),
+                                                    color = TextDarkBlue
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -331,67 +371,3 @@ fun HistoryScreen(
         }
     }
 }
-
-@Preview
-@Composable
-fun HistoryScreenSuccessPreview() {
-    val attendanceRecords: List<AttendanceRecord> = (1..10).map {
-        AttendanceRecord(
-            status = if (it % 2 == 0) AttendanceState.CheckIn.value else AttendanceState.CheckOut.value,
-            officeId = 1,
-            address = "Address $it",
-            officeImageUrl = "https://docs.google.com/uc?id=1QLUw3n7tpZt5iV7RxwzgIwgi6w1Jo29Q",
-            officeName = "Office Name $it",
-            date = "01-01-2020",
-            hour = "12:00"
-        )
-    }
-
-    AttendanceFirebaseTheme {
-        HistoryScreen(
-            onIconNotificationClick = { },
-            selectedHistoryDateFilter = HistoryDateFilter.Day(),
-            attendanceRecordResourceState = ResourceState.Success(attendanceRecords),
-            onSelectHistoryDateFilter = {},
-            onRefresh = {}
-        )
-    }
-}
-
-//@Preview
-//@Composable
-//fun HistoryScreenSuccessEmptyDataPreview() {
-//    AttendanceFirebaseTheme {
-//        HistoryScreen(
-//            onIconNotificationClick = { },
-//            selectedHistoryDateFilter = HistoryDateFilter.Week(),
-//            attendanceRecordResourceState = ResourceState.Success(listOf())
-//        )
-//    }
-//}
-
-//@Preview
-//@Composable
-//fun HistoryScreenLoadingPreview() {
-//    AttendanceFirebaseTheme {
-//        HistoryScreen(
-//            onIconNotificationClick = { },
-//            selectedHistoryDateFilter = HistoryDateFilter.Day(),
-//            attendanceRecordResourceState = ResourceState.Loading
-//        )
-//    }
-//}
-
-//@Preview
-//@Composable
-//fun HistoryScreenErrorPreview() {
-//    AttendanceFirebaseTheme {
-//        HistoryScreen(
-//            onIconNotificationClick = { },
-//            selectedHistoryDateFilter = HistoryDateFilter.Day(),
-//            attendanceRecordResourceState = ResourceState.Error("No Connection"),
-//            onSelectHistoryDateFilter = {},
-//            onRefreshButtonClick = { }
-//        )
-//    }
-//}
