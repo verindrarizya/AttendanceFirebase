@@ -77,6 +77,7 @@ class AttendanceRepository @Inject constructor(
         office: Office,
         attendanceState: AttendanceState
     ): Flow<ResourceState<String>> = callbackFlow {
+        trySend(ResourceState.Loading)
 
         val attendanceRecordSnapshot = AttendanceRecordSnapshot(
             status = attendanceState.value,
