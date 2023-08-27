@@ -16,7 +16,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ChipDefaults
 import androidx.compose.material.CircularProgressIndicator
@@ -34,7 +37,9 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -68,6 +73,7 @@ import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
 import com.verindrarizya.attendancefirebase.util.AttendanceState
+import kotlinx.coroutines.launch
 
 private val listOfFilter: List<HistoryDateFilter> = listOf(
     HistoryDateFilter.Day(),
@@ -84,7 +90,7 @@ fun HistoryScreen(
     val selectedHistoryDateFilter by viewModel.selectedHistoryDateFilter.collectAsStateWithLifecycle()
     val attendanceRecordsPaging = viewModel.attendanceRecordPaging.collectAsLazyPagingItems()
 
-    HistoryScreenPaging(
+    HistoryScreen(
         modifier = modifier,
         selectedHistoryDateFilter = selectedHistoryDateFilter,
         onSelectHistoryDateFilter = viewModel::selectHistoryDateFilter,
@@ -96,7 +102,7 @@ fun HistoryScreen(
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun HistoryScreenPaging(
+fun HistoryScreen(
     modifier: Modifier,
     historyDateFilters: List<HistoryDateFilter> = listOfFilter,
     selectedHistoryDateFilter: HistoryDateFilter?,
@@ -106,6 +112,19 @@ fun HistoryScreenPaging(
     attendanceRecordsPaging: LazyPagingItems<AttendanceRecord>
 ) {
     val refreshState = rememberPullRefreshState(refreshing = false, onRefresh = onRefresh)
+    val filterRowState = rememberLazyListState()
+    val screenScope = rememberCoroutineScope()
+
+    val refresh = attendanceRecordsPaging.loadState.refresh
+
+    LaunchedEffect(selectedHistoryDateFilter) {
+        screenScope.launch {
+            selectedHistoryDateFilter?.let {
+                val selectedIndex = historyDateFilters.indexOf(it)
+                filterRowState.scrollToItem(selectedIndex)
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier,
@@ -175,6 +194,7 @@ fun HistoryScreenPaging(
                     )
                     Spacer(Modifier.height(12.dp))
                     LazyRow(
+                        state = filterRowState,
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(
                             horizontal = 16.dp
@@ -214,117 +234,117 @@ fun HistoryScreenPaging(
                             state = refreshState
                         )
 
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
-                            contentPadding = PaddingValues(
-                                horizontal = 16.dp
-                            )
-                        ) {
-                            attendanceRecordsPaging.apply {
-                                when (loadState.refresh) {
-                                    is LoadState.Loading -> {
-                                        item {
-                                            val composition by rememberLottieComposition(
-                                                spec = LottieCompositionSpec.Asset("loading.json")
-                                            )
+                        when (refresh) {
+                            is LoadState.Error -> {
+                                val composition by rememberLottieComposition(
+                                    spec = LottieCompositionSpec.Asset("error.json")
+                                )
 
-                                            val progress by animateLottieCompositionAsState(
-                                                composition = composition,
-                                                iterations = LottieConstants.IterateForever
-                                            )
+                                val progress by animateLottieCompositionAsState(
+                                    composition = composition,
+                                    iterations = LottieConstants.IterateForever,
+                                    speed = 0.5f
+                                )
 
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxSize(),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                LottieAnimation(
-                                                    composition = composition,
-                                                    progress = { progress }
-                                                )
-                                            }
-                                        }
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .verticalScroll(rememberScrollState()),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Spacer(Modifier.weight(1f))
+                                    LottieAnimation(
+                                        modifier = Modifier.size(200.dp),
+                                        composition = composition,
+                                        progress = { progress },
+                                        contentScale = ContentScale.FillWidth
+                                    )
+                                    Spacer(Modifier.height(12.dp))
+                                    OutlinedButton(
+                                        onClick = { onRefresh() },
+                                        border = ButtonDefaults.outlinedBorder.copy(
+                                            brush = SolidColor(
+                                                value = ButtonBgBlue
+                                            )
+                                        )
+                                    ) {
+                                        Text(
+                                            text = stringResource(R.string.refresh),
+                                            color = TextDarkBlue
+                                        )
                                     }
+                                    Spacer(Modifier.weight(1f))
+                                }
+                            }
 
-                                    is LoadState.Error -> {
-                                        item {
-                                            val composition by rememberLottieComposition(
-                                                spec = LottieCompositionSpec.Asset("error.json")
-                                            )
+                            LoadState.Loading -> {
+                                val composition by rememberLottieComposition(
+                                    spec = LottieCompositionSpec.Asset("loading.json")
+                                )
 
-                                            val progress by animateLottieCompositionAsState(
-                                                composition = composition,
-                                                iterations = LottieConstants.IterateForever,
-                                                speed = 0.5f
-                                            )
+                                val progress by animateLottieCompositionAsState(
+                                    composition = composition,
+                                    iterations = LottieConstants.IterateForever
+                                )
 
-                                            Column(
-                                                modifier = Modifier.fillMaxSize(),
-                                                verticalArrangement = Arrangement.Center,
-                                                horizontalAlignment = Alignment.CenterHorizontally
-                                            ) {
-                                                Spacer(Modifier.weight(1f))
-                                                LottieAnimation(
-                                                    modifier = Modifier.size(200.dp),
-                                                    composition = composition,
-                                                    progress = { progress },
-                                                    contentScale = ContentScale.FillWidth
-                                                )
-                                                Spacer(Modifier.height(12.dp))
-                                                OutlinedButton(
-                                                    onClick = { onRefresh() },
-                                                    border = ButtonDefaults.outlinedBorder.copy(
-                                                        brush = SolidColor(
-                                                            value = ButtonBgBlue
-                                                        )
-                                                    )
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(R.string.refresh),
-                                                        color = TextDarkBlue
-                                                    )
-                                                }
-                                                Spacer(Modifier.weight(1f))
-                                            }
-                                        }
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    LottieAnimation(
+                                        composition = composition,
+                                        progress = { progress }
+                                    )
+                                }
+                            }
+
+                            is LoadState.NotLoading -> {
+                                if (attendanceRecordsPaging.itemCount == 0) {
+                                    val composition by rememberLottieComposition(
+                                        spec = LottieCompositionSpec.Asset("empty.json")
+                                    )
+
+                                    val progress by animateLottieCompositionAsState(
+                                        composition = composition,
+                                        iterations = LottieConstants.IterateForever,
+                                        speed = 0.5f
+                                    )
+
+                                    Column(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .verticalScroll(rememberScrollState()),
+                                        verticalArrangement = Arrangement.Center,
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        LottieAnimation(
+                                            modifier = Modifier.size(200.dp),
+                                            composition = composition,
+                                            progress = { progress },
+                                            contentScale = ContentScale.FillWidth
+                                        )
+                                        Spacer(Modifier.height(12.dp))
+                                        Text(
+                                            text = stringResource(R.string.empty_statement),
+                                            color = TextDarkBlue,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.Medium,
+                                            textAlign = TextAlign.Center
+                                        )
                                     }
-
-                                    is LoadState.NotLoading -> {
-                                        if (itemCount == 0) {
-                                            item {
-                                                val composition by rememberLottieComposition(
-                                                    spec = LottieCompositionSpec.Asset("empty.json")
-                                                )
-
-                                                val progress by animateLottieCompositionAsState(
-                                                    composition = composition,
-                                                    iterations = LottieConstants.IterateForever,
-                                                    speed = 0.5f
-                                                )
-
-                                                Column(
-                                                    modifier = Modifier.fillMaxSize(),
-                                                    verticalArrangement = Arrangement.Center,
-                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                ) {
-                                                    LottieAnimation(
-                                                        modifier = Modifier.size(200.dp),
-                                                        composition = composition,
-                                                        progress = { progress },
-                                                        contentScale = ContentScale.FillWidth
-                                                    )
-                                                    Spacer(Modifier.height(12.dp))
-                                                    Text(
-                                                        text = stringResource(R.string.empty_statement),
-                                                        color = TextDarkBlue,
-                                                        fontSize = 18.sp,
-                                                        fontWeight = FontWeight.Medium,
-                                                        textAlign = TextAlign.Center
-                                                    )
-                                                }
-                                            }
-                                        } else {
+                                } else {
+                                    LazyColumn(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .verticalScroll(rememberScrollState()),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                                        contentPadding = PaddingValues(
+                                            horizontal = 16.dp
+                                        )
+                                    ) {
+                                        attendanceRecordsPaging.apply {
                                             items(itemSnapshotList) { attendanceRecord ->
                                                 attendanceRecord?.let {
                                                     AsyncImageListItem(
@@ -343,40 +363,40 @@ fun HistoryScreenPaging(
                                                     )
                                                 }
                                             }
-                                        }
-                                    }
-                                }
-                                when {
-                                    loadState.append is LoadState.Loading -> {
-                                        item {
-                                            Box(
-                                                modifier = Modifier
-                                                    .fillMaxWidth(),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                CircularProgressIndicator()
-                                            }
-                                        }
-                                    }
+                                            when {
+                                                loadState.append is LoadState.Loading -> {
+                                                    item {
+                                                        Box(
+                                                            modifier = Modifier
+                                                                .fillMaxWidth(),
+                                                            contentAlignment = Alignment.Center
+                                                        ) {
+                                                            CircularProgressIndicator()
+                                                        }
+                                                    }
+                                                }
 
-                                    loadState.append is LoadState.Error -> {
-                                        item {
-                                            Box(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                OutlinedButton(
-                                                    onClick = { onRefresh() },
-                                                    border = ButtonDefaults.outlinedBorder.copy(
-                                                        brush = SolidColor(
-                                                            value = ButtonBgBlue
-                                                        )
-                                                    )
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(R.string.refresh),
-                                                        color = TextDarkBlue
-                                                    )
+                                                loadState.append is LoadState.Error -> {
+                                                    item {
+                                                        Box(
+                                                            modifier = Modifier.fillMaxWidth(),
+                                                            contentAlignment = Alignment.Center
+                                                        ) {
+                                                            OutlinedButton(
+                                                                onClick = { onRefresh() },
+                                                                border = ButtonDefaults.outlinedBorder.copy(
+                                                                    brush = SolidColor(
+                                                                        value = ButtonBgBlue
+                                                                    )
+                                                                )
+                                                            ) {
+                                                                Text(
+                                                                    text = stringResource(R.string.refresh),
+                                                                    color = TextDarkBlue
+                                                                )
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

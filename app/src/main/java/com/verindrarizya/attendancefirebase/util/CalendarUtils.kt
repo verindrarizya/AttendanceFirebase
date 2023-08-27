@@ -19,27 +19,29 @@ object CalendarUtils {
 
     val currentDate: String
         get() {
-            return dateFormat.format(Calendar.getInstance().time)
+            return dateFormat.format(Calendar.getInstance(localeIndo).time)
         }
 
-    val aWeekAgoDate: String
+    val beginningWeekDate: String
         get() {
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.DATE, -7)
+            val calendar = Calendar.getInstance(localeIndo)
+            calendar.firstDayOfWeek = Calendar.MONDAY
+            calendar.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
             return dateFormat.format(calendar.time)
         }
 
-    val aMonthAgoDate: String
+    val beginningMonthDate: String
         get() {
-            val calendar = Calendar.getInstance()
-            calendar.add(Calendar.MONTH, -1)
+            val calendar = Calendar.getInstance(localeIndo)
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
             return dateFormat.format(calendar.time)
         }
 
-    val aYearAgoDate: String
+    val beginningYearDate: String
         get() {
             val calendar = Calendar.getInstance()
-            calendar.add(Calendar.YEAR, -1)
+            calendar.set(Calendar.MONTH, Calendar.JANUARY)
+            calendar.set(Calendar.DAY_OF_MONTH, 1)
             return dateFormat.format(calendar.time)
         }
 
