@@ -18,18 +18,18 @@ sealed class HistoryDateFilter {
     data class Week(
         override val nameStrResource: Int = R.string.week,
         override val startDate: String = CalendarUtils.currentDate,
-        override val endDate: String = CalendarUtils.aWeekAgoDate
+        override val endDate: String = CalendarUtils.beginningWeekDate
     ) : HistoryDateFilter()
 
     data class Month(
         override val nameStrResource: Int = R.string.month,
         override val startDate: String = CalendarUtils.currentDate,
-        override val endDate: String = CalendarUtils.aMonthAgoDate
+        override val endDate: String = CalendarUtils.beginningMonthDate
     ) : HistoryDateFilter()
 
     data class Year(
         override val nameStrResource: Int = R.string.year,
         override val startDate: String = CalendarUtils.currentDate,
-        override val endDate: String = CalendarUtils.aYearAgoDate
+        override val endDate: String = CalendarUtils.beginningYearDate
     ) : HistoryDateFilter()
 }

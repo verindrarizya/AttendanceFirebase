@@ -39,18 +39,10 @@ class AttendanceRecordsPagingSource(
             val lastAttendanceRecordDate = attendanceRecords.last().date
             val nextKey = CalendarUtils.getPreviousDayDate(lastAttendanceRecordDate)
 
-            if (nextKey == params.key) {
-                return LoadResult.Page(
-                    data = emptyList(),
-                    prevKey = null,
-                    nextKey = null
-                )
-            }
-
             return LoadResult.Page(
                 data = attendanceRecords,
                 prevKey = null,
-                nextKey = nextKey
+                nextKey = if (startDate == currentEndDate || nextKey == params.key) null else nextKey
             )
         } catch (e: NoSuchElementException) {
             return LoadResult.Page(

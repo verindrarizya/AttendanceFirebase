@@ -13,9 +13,8 @@ class CalendarUtilsTest {
     @Test
     fun dateTest() {
         println("Current date: ${CalendarUtils.currentDate}")
-        println("A week ago date: ${CalendarUtils.aWeekAgoDate}")
-        println("A month ago date: ${CalendarUtils.aMonthAgoDate}")
-        println("A year ago date: ${CalendarUtils.aYearAgoDate}")
+        println("A week ago date: ${CalendarUtils.beginningWeekDate}")
+        println("A month ago date: ${CalendarUtils.beginningMonthDate}")
+        println("A year ago date: ${CalendarUtils.beginningYearDate}")
     }
-
 }
