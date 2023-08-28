@@ -337,8 +337,7 @@ fun HistoryScreen(
                                 } else {
                                     LazyColumn(
                                         modifier = Modifier
-                                            .fillMaxSize()
-                                            .verticalScroll(rememberScrollState()),
+                                            .fillMaxSize(),
                                         verticalArrangement = Arrangement.spacedBy(8.dp),
                                         contentPadding = PaddingValues(
                                             horizontal = 16.dp
