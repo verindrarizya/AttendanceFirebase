@@ -2,7 +2,9 @@
 Simple attendance app made with Jetpack Compose &amp; Firebase Realtime Database
 
 ## Demo
-https://github.com/verindrarizya/AttendanceFirebase/assets/65704224/83c6cafb-79b9-4eed-81e9-6de8db59a706
+https://github.com/verindrarizya/AttendanceFirebase/assets/65704224/36624789-ddb0-4f2f-9155-7c14348d83a8
+
+
 
 ## Build With
 - [Kotlin](https://kotlinlang.org/), a modern statically typed programming language.
