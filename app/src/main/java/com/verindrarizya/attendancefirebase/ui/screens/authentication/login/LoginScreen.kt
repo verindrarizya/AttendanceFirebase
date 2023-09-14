@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.verindrarizya.attendancefirebase.R
-import com.verindrarizya.attendancefirebase.common.util.Resource
 import com.verindrarizya.attendancefirebase.ui.composables.template.AuthTemplate
 import com.verindrarizya.attendancefirebase.ui.composables.widget.OutlinedTextFieldOutsideLabel
 import com.verindrarizya.attendancefirebase.ui.composables.widget.PasswordOutlinedTextFieldOutsideLabel
@@ -68,7 +67,7 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    loginResource: Resource<String>,
+    loginResource: com.verindrarizya.attendancefirebase.common.util.Resource<String>,
     onNavigateToRegisterScreen: () -> Unit,
     email: String,
     isEmailError: Boolean,
@@ -106,7 +105,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    if (loginResource !is Resource.Loading) {
+                    if (loginResource !is com.verindrarizya.attendancefirebase.common.util.Resource.Loading) {
                         onButtonLoginClick()
                     }
                 },
@@ -121,7 +120,7 @@ fun LoginScreen(
                     vertical = 14.dp
                 )
             ) {
-                if (loginResource is Resource.Loading) {
+                if (loginResource is com.verindrarizya.attendancefirebase.common.util.Resource.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(14.dp)
                     )
@@ -156,7 +155,7 @@ fun LoginScreenPreview() {
             onPasswordChange = {},
             onButtonLoginClick = {},
             isButtonLoginEnabled = true,
-            loginResource = Resource.Init
+            loginResource = com.verindrarizya.attendancefirebase.common.util.Resource.Init
         )
     }
 }

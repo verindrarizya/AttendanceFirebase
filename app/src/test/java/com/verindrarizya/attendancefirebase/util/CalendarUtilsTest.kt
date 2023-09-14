@@ -1,21 +1,20 @@
 package com.verindrarizya.attendancefirebase.util
 
-import com.verindrarizya.attendancefirebase.common.util.CalendarUtils
 import org.junit.Test
 
 class CalendarUtilsTest {
 
     @Test
     fun currentHourTest() {
-        val currentHour = CalendarUtils.currentHour
+        val currentHour = com.verindrarizya.attendancefirebase.common.util.CalendarUtils.currentHour
         println(currentHour)
     }
 
     @Test
     fun dateTest() {
-        println("Current date: ${CalendarUtils.currentDate}")
-        println("A week ago date: ${CalendarUtils.beginningWeekDate}")
-        println("A month ago date: ${CalendarUtils.beginningMonthDate}")
-        println("A year ago date: ${CalendarUtils.beginningYearDate}")
+        println("Current date: ${com.verindrarizya.attendancefirebase.common.util.CalendarUtils.currentDate}")
+        println("A week ago date: ${com.verindrarizya.attendancefirebase.common.util.CalendarUtils.beginningWeekDate}")
+        println("A month ago date: ${com.verindrarizya.attendancefirebase.common.util.CalendarUtils.beginningMonthDate}")
+        println("A year ago date: ${com.verindrarizya.attendancefirebase.common.util.CalendarUtils.beginningYearDate}")
     }
 }

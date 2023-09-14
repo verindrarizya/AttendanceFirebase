@@ -2,12 +2,11 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.verindrarizya.attendancefirebase.common.state.AttendanceState
-import com.verindrarizya.attendancefirebase.common.state.TodayAttendanceState
-import com.verindrarizya.attendancefirebase.common.util.Resource
-import com.verindrarizya.attendancefirebase.data.repository.attendance.AttendanceRepository
-import com.verindrarizya.attendancefirebase.data.repository.office.OfficeRepository
-import com.verindrarizya.attendancefirebase.ui.model.Office
+import com.verindrarizya.attendancefirebase.core.data.repository.attendance.AttendanceRepository
+import com.verindrarizya.attendancefirebase.core.data.repository.office.OfficeRepository
+import com.verindrarizya.attendancefirebase.core.data.state.AttendanceState
+import com.verindrarizya.attendancefirebase.core.data.state.TodayAttendanceState
+import com.verindrarizya.attendancefirebase.core.entity.Office
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +26,7 @@ private data class HomeViewModelState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val isError: Boolean = false,
-    val listOfOfficeResource: Resource<List<Office>> = Resource.Loading,
+    val listOfOfficeResource: com.verindrarizya.attendancefirebase.common.util.Resource<List<Office>> = com.verindrarizya.attendancefirebase.common.util.Resource.Loading,
     val selectedOffice: Office? = null
 ) {
 
@@ -85,21 +84,21 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             attendanceRepository.checkTodayAttendanceState().collect { resourceState ->
                 when (resourceState) {
-                    is Resource.Error -> {
+                    is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
                         _homeViewModelState.update {
                             it.copy(isLoading = false, isError = true)
                         }
                         _messageFlow.emit(resourceState.message)
                     }
 
-                    Resource.Init -> { /* Do Nothing */
+                    com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
                     }
 
-                    Resource.Loading -> {
+                    com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
                         _homeViewModelState.update { it.copy(isLoading = true, isError = false) }
                     }
 
-                    is Resource.Success -> {
+                    is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
                         processTodayAttendanceState(resourceState.data)
                     }
                 }
@@ -177,19 +176,19 @@ class HomeViewModel @Inject constructor(
     ) {
         attendanceRepository.recordAttendance(office, attendanceState).collect { resourceState ->
             when (resourceState) {
-                is Resource.Error -> {
+                is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
                     _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.message)
                 }
 
-                Resource.Init -> { /* Do Nothing */
+                com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
                 }
 
-                Resource.Loading -> {
+                com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
                     _homeViewModelState.update { it.copy(isLoading = true) }
                 }
 
-                is Resource.Success -> {
+                is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
                     _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.data)
                 }

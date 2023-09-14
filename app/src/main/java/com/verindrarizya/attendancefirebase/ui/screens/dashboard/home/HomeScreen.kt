@@ -51,13 +51,12 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.R
-import com.verindrarizya.attendancefirebase.common.util.Resource
+import com.verindrarizya.attendancefirebase.core.entity.Office
 import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.CircleButton
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.LoadingDialog
 import com.verindrarizya.attendancefirebase.ui.composables.widget.OfficeImage
-import com.verindrarizya.attendancefirebase.ui.model.Office
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.BackgroundScaffoldColor
@@ -219,16 +218,16 @@ fun HomeScreen(
                     when (homeUiState) {
                         is HomeUiState.CheckInUiState -> {
                             when (homeUiState.listOfOfficeResource) {
-                                is Resource.Error -> {
+                                is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
                                     item {
                                         ErrorLayout()
                                     }
                                 }
 
-                                Resource.Init -> { /* Do Nothing */
+                                com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
                                 }
 
-                                Resource.Loading -> {
+                                com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
                                     item {
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -239,7 +238,7 @@ fun HomeScreen(
                                     }
                                 }
 
-                                is Resource.Success -> {
+                                is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
                                     items(
                                         homeUiState.listOfOfficeResource.data,
                                         key = { it.id }) {
@@ -359,7 +358,9 @@ fun HomeScreenSuccessCheckInStatePreview() {
             onButtonAttendanceClicked = { },
             homeUiState = HomeUiState.CheckInUiState(
                 isLoading = false,
-                listOfOfficeResource = Resource.Success(dummyOffices)
+                listOfOfficeResource = com.verindrarizya.attendancefirebase.common.util.Resource.Success(
+                    dummyOffices
+                )
             ),
             onSelectOffice = {},
             onRefresh = {}
@@ -457,7 +458,9 @@ fun HomeScreenOfficeErrorCheckInUiStatePreview() {
         HomeScreen(
             homeUiState = HomeUiState.CheckInUiState(
                 isLoading = false,
-                listOfOfficeResource = Resource.Error("Error Gan")
+                listOfOfficeResource = com.verindrarizya.attendancefirebase.common.util.Resource.Error(
+                    "Error Gan"
+                )
             ),
             onIconNotificationClick = {},
             onSelectOffice = {},

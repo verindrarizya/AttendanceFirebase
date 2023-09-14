@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.verindrarizya.attendancefirebase.R
-import com.verindrarizya.attendancefirebase.common.util.Resource
 import com.verindrarizya.attendancefirebase.ui.composables.template.AuthTemplate
 import com.verindrarizya.attendancefirebase.ui.composables.widget.OutlinedTextFieldOutsideLabel
 import com.verindrarizya.attendancefirebase.ui.composables.widget.PasswordOutlinedTextFieldOutsideLabel
@@ -47,16 +46,22 @@ fun RegisterScreen(
 
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        viewModel.message.collect {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+        }
+    }
+
     LaunchedEffect(registerResourceState) {
-        if (registerResourceState is Resource.Error) {
+        if (registerResourceState is com.verindrarizya.attendancefirebase.common.util.Resource.Error) {
             Toast.makeText(
                 context,
-                (registerResourceState as Resource.Error).message,
+                (registerResourceState as com.verindrarizya.attendancefirebase.common.util.Resource.Error).message,
                 Toast.LENGTH_SHORT
             ).show()
         }
 
-        if (registerResourceState is Resource.Success) {
+        if (registerResourceState is com.verindrarizya.attendancefirebase.common.util.Resource.Success) {
             onNavigateToDashboardScreen()
         }
     }
@@ -86,7 +91,7 @@ fun RegisterScreen(
 @Composable
 fun RegisterScreen(
     modifier: Modifier = Modifier,
-    registerResource: Resource<String>,
+    registerResource: com.verindrarizya.attendancefirebase.common.util.Resource<String>,
     onNavigateToLoginScreen: () -> Unit,
     onButtonRegisterClicked: () -> Unit,
     email: String,
@@ -150,7 +155,7 @@ fun RegisterScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    if (registerResource != Resource.Loading) {
+                    if (registerResource != com.verindrarizya.attendancefirebase.common.util.Resource.Loading) {
                         onButtonRegisterClicked()
                     }
                 },
@@ -165,7 +170,7 @@ fun RegisterScreen(
                     vertical = 14.dp
                 )
             ) {
-                if (registerResource is Resource.Loading) {
+                if (registerResource is com.verindrarizya.attendancefirebase.common.util.Resource.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(14.dp)
                     )
@@ -192,7 +197,7 @@ fun RegisterScreenPreview() {
     AttendanceFirebaseTheme {
         RegisterScreen(
             onNavigateToLoginScreen = {},
-            registerResource = Resource.Init,
+            registerResource = com.verindrarizya.attendancefirebase.common.util.Resource.Init,
             onButtonRegisterClicked = {},
             email = "",
             onTextFieldEmailValueChange = {},

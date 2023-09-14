@@ -2,9 +2,8 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.verindrarizya.attendancefirebase.common.util.Resource
-import com.verindrarizya.attendancefirebase.data.repository.auth.AuthRepository
-import com.verindrarizya.attendancefirebase.data.repository.profile.ProfileRepository
+import com.verindrarizya.attendancefirebase.core.data.repository.auth.AuthRepository
+import com.verindrarizya.attendancefirebase.core.data.repository.profile.ProfileRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,19 +45,19 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             profileRepository.getProfileData().collect { resourceState ->
                 when (resourceState) {
-                    is Resource.Error -> {
+                    is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
                         _profileUiState.update { it.copy(isLoading = false, isRefreshing = false) }
                         _message.emit(resourceState.message)
                     }
 
-                    Resource.Init -> { /* Do Nothing */
+                    com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
                     }
 
-                    Resource.Loading -> {
+                    com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
                         _profileUiState.update { it.copy(isLoading = true) }
                     }
 
-                    is Resource.Success -> {
+                    is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
                         _profileUiState.update {
                             it.copy(
                                 isLoading = false,
