@@ -3,10 +3,10 @@ package com.verindrarizya.attendancefirebase.data.paging
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.google.firebase.database.DatabaseReference
-import com.verindrarizya.attendancefirebase.data.firebasemodel.AttendanceRecordSnapshot
-import com.verindrarizya.attendancefirebase.data.firebasemodel.toAttendance
+import com.verindrarizya.attendancefirebase.common.util.CalendarUtils
+import com.verindrarizya.attendancefirebase.data.model.firebase.AttendanceRecordSnapshot
+import com.verindrarizya.attendancefirebase.data.model.firebase.toAttendance
 import com.verindrarizya.attendancefirebase.ui.model.AttendanceRecord
-import com.verindrarizya.attendancefirebase.util.CalendarUtils
 import kotlinx.coroutines.tasks.await
 
 class AttendanceRecordsPagingSource(

@@ -1,7 +1,7 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.home
 
+import com.verindrarizya.attendancefirebase.common.util.Resource
 import com.verindrarizya.attendancefirebase.ui.model.Office
-import com.verindrarizya.attendancefirebase.util.ResourceState
 
 sealed interface HomeUiState {
     val isLoading: Boolean
@@ -12,7 +12,7 @@ sealed interface HomeUiState {
         override val isLoading: Boolean = false,
         override val isRefreshing: Boolean = false,
         override val isError: Boolean = false,
-        val listOfOfficeResourceState: ResourceState<List<Office>> = ResourceState.Loading,
+        val listOfOfficeResource: Resource<List<Office>> = Resource.Loading,
         val selectedOffice: Office? = null
     ) : HomeUiState
 

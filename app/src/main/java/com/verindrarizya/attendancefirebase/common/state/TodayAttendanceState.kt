@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.util
+package com.verindrarizya.attendancefirebase.common.state
 
 import com.verindrarizya.attendancefirebase.ui.model.Office
 

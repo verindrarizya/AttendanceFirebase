@@ -1,7 +1,7 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.history
 
 import com.verindrarizya.attendancefirebase.R
-import com.verindrarizya.attendancefirebase.util.CalendarUtils
+import com.verindrarizya.attendancefirebase.common.util.CalendarUtils
 
 sealed class HistoryDateFilter {
     abstract val nameStrResource: Int

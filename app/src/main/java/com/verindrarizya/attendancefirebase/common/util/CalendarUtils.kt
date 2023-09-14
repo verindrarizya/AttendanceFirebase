@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.util
+package com.verindrarizya.attendancefirebase.common.util
 
 import java.text.SimpleDateFormat
 import java.time.LocalDate

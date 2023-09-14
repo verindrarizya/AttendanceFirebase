@@ -1,31 +1,31 @@
-package com.verindrarizya.attendancefirebase.data.repository
+package com.verindrarizya.attendancefirebase.data.repository.attendance
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.verindrarizya.attendancefirebase.data.firebasemodel.AttendanceRecordSnapshot
-import com.verindrarizya.attendancefirebase.data.firebasemodel.toOffice
+import com.verindrarizya.attendancefirebase.common.state.AttendanceState
+import com.verindrarizya.attendancefirebase.common.state.TodayAttendanceState
+import com.verindrarizya.attendancefirebase.common.util.CalendarUtils
+import com.verindrarizya.attendancefirebase.common.util.Resource
+import com.verindrarizya.attendancefirebase.data.model.firebase.AttendanceRecordSnapshot
+import com.verindrarizya.attendancefirebase.data.model.firebase.toOffice
 import com.verindrarizya.attendancefirebase.data.paging.AttendanceRecordsPagingSource
 import com.verindrarizya.attendancefirebase.ui.model.Office
-import com.verindrarizya.attendancefirebase.util.AttendanceState
-import com.verindrarizya.attendancefirebase.util.CalendarUtils
-import com.verindrarizya.attendancefirebase.util.ResourceState
-import com.verindrarizya.attendancefirebase.util.TodayAttendanceState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 
-class AttendanceRepository @Inject constructor(
+class AttendanceRepositoryImpl @Inject constructor(
     private val firebaseDatabase: FirebaseDatabase,
     private val auth: FirebaseAuth
-) {
+) : AttendanceRepository {
 
-    fun checkTodayAttendanceState(): Flow<ResourceState<TodayAttendanceState>> = callbackFlow {
-        trySend(ResourceState.Loading)
+    override fun checkTodayAttendanceState(): Flow<Resource<TodayAttendanceState>> = callbackFlow {
+        trySend(Resource.Loading)
 
         val userAttendanceReference = firebaseDatabase
             .getReference("attendance/${auth.currentUser?.uid}")
@@ -38,7 +38,7 @@ class AttendanceRepository @Inject constructor(
                 }
 
                 if (attendanceRecordSnapshots.isEmpty()) {
-                    trySend(ResourceState.Success(TodayAttendanceState.NoRecord))
+                    trySend(Resource.Success(TodayAttendanceState.NoRecord))
                 } else {
                     val record = attendanceRecordSnapshots[0]
 
@@ -46,23 +46,23 @@ class AttendanceRepository @Inject constructor(
                         if (record.status == AttendanceState.CheckIn.value) {
                             val currentOffice = record.toOffice()
                             trySend(
-                                ResourceState.Success(
+                                Resource.Success(
                                     TodayAttendanceState.CheckedIn(
                                         currentOffice
                                     )
                                 )
                             )
                         } else {
-                            trySend(ResourceState.Success(TodayAttendanceState.CheckedOut))
+                            trySend(Resource.Success(TodayAttendanceState.CheckedOut))
                         }
                     } else {
-                        trySend(ResourceState.Success(TodayAttendanceState.NoRecord))
+                        trySend(Resource.Success(TodayAttendanceState.NoRecord))
                     }
                 }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                trySend(ResourceState.Error(error.message))
+                trySend(Resource.Error(error.message))
             }
         }
 
@@ -73,11 +73,11 @@ class AttendanceRepository @Inject constructor(
         }
     }
 
-    fun recordAttendance(
+    override fun recordAttendance(
         office: Office,
         attendanceState: AttendanceState
-    ): Flow<ResourceState<String>> = callbackFlow {
-        trySend(ResourceState.Loading)
+    ): Flow<Resource<String>> = callbackFlow {
+        trySend(Resource.Loading)
 
         val attendanceRecordSnapshot = AttendanceRecordSnapshot(
             status = attendanceState.value,
@@ -96,23 +96,23 @@ class AttendanceRepository @Inject constructor(
         userAttendanceReference.push().setValue(attendanceRecordSnapshot)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    trySend(ResourceState.Success("${attendanceState.value} Success"))
+                    trySend(Resource.Success("${attendanceState.value} Success"))
                 } else {
                     trySend(
-                        ResourceState.Error(
+                        Resource.Error(
                             task.exception?.message ?: "${attendanceState.value} Failed"
                         )
                     )
                 }
             }
             .addOnFailureListener {
-                trySend(ResourceState.Error(it.message ?: "${attendanceState.value} Failed"))
+                trySend(Resource.Error(it.message ?: "${attendanceState.value} Failed"))
             }
 
         awaitClose { }
     }
 
-    fun getAttendanceRecordsPagingSource(
+    override fun getAttendanceRecordsPagingSource(
         startDate: String,
         endDate: String
     ): AttendanceRecordsPagingSource = AttendanceRecordsPagingSource(

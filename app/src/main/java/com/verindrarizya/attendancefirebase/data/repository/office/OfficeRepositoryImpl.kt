@@ -1,25 +1,27 @@
-package com.verindrarizya.attendancefirebase.data.repository
+package com.verindrarizya.attendancefirebase.data.repository.office
 
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.verindrarizya.attendancefirebase.data.firebasemodel.OfficeSnapshot
-import com.verindrarizya.attendancefirebase.data.firebasemodel.toOffice
+import com.verindrarizya.attendancefirebase.common.util.Resource
+import com.verindrarizya.attendancefirebase.data.model.firebase.OfficeSnapshot
+import com.verindrarizya.attendancefirebase.data.model.firebase.toOffice
 import com.verindrarizya.attendancefirebase.ui.model.Office
-import com.verindrarizya.attendancefirebase.util.ResourceState
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class OfficeRepository @Inject constructor(
+@Singleton
+class OfficeRepositoryImpl @Inject constructor(
     firebaseDatabase: FirebaseDatabase
-) {
+) : OfficeRepository {
 
     private val officesReference = firebaseDatabase.getReference("offices")
 
-    fun getOffices(): Flow<ResourceState<List<Office>>> = callbackFlow {
+    override fun getOffices(): Flow<Resource<List<Office>>> = callbackFlow {
 
         val officesValueEventListener = object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -29,11 +31,11 @@ class OfficeRepository @Inject constructor(
 
                 val offices = officesSnapshot.map { it.toOffice() }
 
-                trySend(ResourceState.Success(offices))
+                trySend(Resource.Success(offices))
             }
 
             override fun onCancelled(error: DatabaseError) {
-                trySend(ResourceState.Error(error.message))
+                trySend(Resource.Error(error.message))
             }
         }
 

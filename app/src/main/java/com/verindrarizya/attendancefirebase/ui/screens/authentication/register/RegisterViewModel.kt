@@ -2,8 +2,8 @@ package com.verindrarizya.attendancefirebase.ui.screens.authentication.register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.verindrarizya.attendancefirebase.data.repository.AuthRepository
-import com.verindrarizya.attendancefirebase.util.ResourceState
+import com.verindrarizya.attendancefirebase.common.util.Resource
+import com.verindrarizya.attendancefirebase.data.repository.auth.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,9 +24,9 @@ class RegisterViewModel @Inject constructor(
         MutableStateFlow(RegisterUiState())
     val registerUiState: StateFlow<RegisterUiState> = _registerUiState.asStateFlow()
 
-    private val _registerResourceState: MutableStateFlow<ResourceState<String>> =
-        MutableStateFlow(ResourceState.Init)
-    val registerResourceState = _registerResourceState.asStateFlow()
+    private val _registerResource: MutableStateFlow<Resource<String>> =
+        MutableStateFlow(Resource.Init)
+    val registerResourceState = _registerResource.asStateFlow()
 
     private val _message: MutableSharedFlow<String> = MutableSharedFlow()
     val message: SharedFlow<String> = _message.asSharedFlow()
@@ -59,10 +59,10 @@ class RegisterViewModel @Inject constructor(
         registerUiState.value.apply {
             viewModelScope.launch {
                 authRepository.register(email, password, fullName).collect {
-                    if (it is ResourceState.Error) {
+                    if (it is Resource.Error) {
                         _message.emit(it.message)
                     }
-                    _registerResourceState.value = it
+                    _registerResource.value = it
                 }
             }
         }

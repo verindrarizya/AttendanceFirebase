@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.data.firebasemodel
+package com.verindrarizya.attendancefirebase.data.model.firebase
 
 import com.google.firebase.database.IgnoreExtraProperties
 import com.verindrarizya.attendancefirebase.ui.model.UserProfile

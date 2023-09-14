@@ -63,6 +63,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.R
+import com.verindrarizya.attendancefirebase.common.state.AttendanceState
 import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
 import com.verindrarizya.attendancefirebase.ui.model.AttendanceRecord
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
@@ -72,7 +73,6 @@ import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
-import com.verindrarizya.attendancefirebase.util.AttendanceState
 import kotlinx.coroutines.launch
 
 private val listOfFilter: List<HistoryDateFilter> = listOf(

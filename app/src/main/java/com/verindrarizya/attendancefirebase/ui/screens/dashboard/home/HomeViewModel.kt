@@ -2,12 +2,12 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.verindrarizya.attendancefirebase.data.repository.AttendanceRepository
-import com.verindrarizya.attendancefirebase.data.repository.OfficeRepository
+import com.verindrarizya.attendancefirebase.common.state.AttendanceState
+import com.verindrarizya.attendancefirebase.common.state.TodayAttendanceState
+import com.verindrarizya.attendancefirebase.common.util.Resource
+import com.verindrarizya.attendancefirebase.data.repository.attendance.AttendanceRepository
+import com.verindrarizya.attendancefirebase.data.repository.office.OfficeRepository
 import com.verindrarizya.attendancefirebase.ui.model.Office
-import com.verindrarizya.attendancefirebase.util.AttendanceState
-import com.verindrarizya.attendancefirebase.util.ResourceState
-import com.verindrarizya.attendancefirebase.util.TodayAttendanceState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,7 +27,7 @@ private data class HomeViewModelState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val isError: Boolean = false,
-    val listOfOfficeResourceState: ResourceState<List<Office>> = ResourceState.Loading,
+    val listOfOfficeResource: Resource<List<Office>> = Resource.Loading,
     val selectedOffice: Office? = null
 ) {
 
@@ -44,7 +44,7 @@ private data class HomeViewModelState(
                 isLoading = isLoading,
                 isRefreshing = isRefreshing,
                 isError = isError,
-                listOfOfficeResourceState = listOfOfficeResourceState,
+                listOfOfficeResource = listOfOfficeResource,
                 selectedOffice = selectedOffice
             )
         }
@@ -85,21 +85,21 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             attendanceRepository.checkTodayAttendanceState().collect { resourceState ->
                 when (resourceState) {
-                    is ResourceState.Error -> {
+                    is Resource.Error -> {
                         _homeViewModelState.update {
                             it.copy(isLoading = false, isError = true)
                         }
                         _messageFlow.emit(resourceState.message)
                     }
 
-                    ResourceState.Init -> { /* Do Nothing */
+                    Resource.Init -> { /* Do Nothing */
                     }
 
-                    ResourceState.Loading -> {
+                    Resource.Loading -> {
                         _homeViewModelState.update { it.copy(isLoading = true, isError = false) }
                     }
 
-                    is ResourceState.Success -> {
+                    is Resource.Success -> {
                         processTodayAttendanceState(resourceState.data)
                     }
                 }
@@ -123,7 +123,7 @@ class HomeViewModel @Inject constructor(
     private fun getOffices() {
         viewModelScope.launch {
             officeRepository.getOffices().collect { officesResource ->
-                _homeViewModelState.update { it.copy(listOfOfficeResourceState = officesResource) }
+                _homeViewModelState.update { it.copy(listOfOfficeResource = officesResource) }
             }
         }
     }
@@ -177,19 +177,19 @@ class HomeViewModel @Inject constructor(
     ) {
         attendanceRepository.recordAttendance(office, attendanceState).collect { resourceState ->
             when (resourceState) {
-                is ResourceState.Error -> {
+                is Resource.Error -> {
                     _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.message)
                 }
 
-                ResourceState.Init -> { /* Do Nothing */
+                Resource.Init -> { /* Do Nothing */
                 }
 
-                ResourceState.Loading -> {
+                Resource.Loading -> {
                     _homeViewModelState.update { it.copy(isLoading = true) }
                 }
 
-                is ResourceState.Success -> {
+                is Resource.Success -> {
                     _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.data)
                 }
