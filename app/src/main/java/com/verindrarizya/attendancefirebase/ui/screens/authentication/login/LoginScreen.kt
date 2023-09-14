@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.verindrarizya.attendancefirebase.R
+import com.verindrarizya.attendancefirebase.common.util.Resource
 import com.verindrarizya.attendancefirebase.ui.composables.template.AuthTemplate
 import com.verindrarizya.attendancefirebase.ui.composables.widget.OutlinedTextFieldOutsideLabel
 import com.verindrarizya.attendancefirebase.ui.composables.widget.PasswordOutlinedTextFieldOutsideLabel
@@ -32,7 +33,6 @@ import com.verindrarizya.attendancefirebase.ui.composables.widget.SpanClickableT
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonBgYellow
 import com.verindrarizya.attendancefirebase.ui.theme.ButtonTextDarkBlueGrayish
-import com.verindrarizya.attendancefirebase.util.ResourceState
 
 @Composable
 fun LoginScreen(
@@ -52,7 +52,7 @@ fun LoginScreen(
 
     LoginScreen(
         modifier = modifier,
-        loginResourceState = loginResourceState,
+        loginResource = loginResourceState,
         onNavigateToRegisterScreen = onNavigateToRegisterScreen,
         email = loginUiState.email,
         isEmailError = loginUiState.isEmailError,
@@ -68,7 +68,7 @@ fun LoginScreen(
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    loginResourceState: ResourceState<String>,
+    loginResource: Resource<String>,
     onNavigateToRegisterScreen: () -> Unit,
     email: String,
     isEmailError: Boolean,
@@ -106,7 +106,7 @@ fun LoginScreen(
             Button(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
-                    if (loginResourceState !is ResourceState.Loading) {
+                    if (loginResource !is Resource.Loading) {
                         onButtonLoginClick()
                     }
                 },
@@ -121,7 +121,7 @@ fun LoginScreen(
                     vertical = 14.dp
                 )
             ) {
-                if (loginResourceState is ResourceState.Loading) {
+                if (loginResource is Resource.Loading) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(14.dp)
                     )
@@ -156,7 +156,7 @@ fun LoginScreenPreview() {
             onPasswordChange = {},
             onButtonLoginClick = {},
             isButtonLoginEnabled = true,
-            loginResourceState = ResourceState.Init
+            loginResource = Resource.Init
         )
     }
 }

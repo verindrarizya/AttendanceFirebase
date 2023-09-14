@@ -2,9 +2,9 @@ package com.verindrarizya.attendancefirebase.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.verindrarizya.attendancefirebase.data.repository.AuthRepository
-import com.verindrarizya.attendancefirebase.data.repository.PreferencesRepository
-import com.verindrarizya.attendancefirebase.util.AuthState
+import com.verindrarizya.attendancefirebase.common.state.AuthState
+import com.verindrarizya.attendancefirebase.data.repository.auth.AuthRepository
+import com.verindrarizya.attendancefirebase.data.repository.preferences.PreferencesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,7 +18,7 @@ class AttendanceFirebaseViewModel @Inject constructor(
     authRepository: AuthRepository
 ) : ViewModel() {
 
-    private val isUserAlreadyOnBoarded = preferencesRepository.isUserAlreadyOnBoarded
+    private val isAlreadyOnBoarded = preferencesRepository.isAlreadyOnBoarded()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
@@ -26,7 +26,7 @@ class AttendanceFirebaseViewModel @Inject constructor(
         )
 
     val authenticationState: StateFlow<Pair<Boolean, AuthState>?> =
-        isUserAlreadyOnBoarded.combine(authRepository.authStateFlow) { onBoarded: Boolean?, authState: AuthState ->
+        isAlreadyOnBoarded.combine(authRepository.currentAuthState()) { onBoarded: Boolean?, authState: AuthState ->
             onBoarded?.let {
                 Pair(onBoarded, authState)
             }
@@ -37,6 +37,6 @@ class AttendanceFirebaseViewModel @Inject constructor(
         )
 
     fun setUserOnBoarded() {
-        preferencesRepository.setUserOnBoarded()
+        preferencesRepository.setOnBoarded()
     }
 }

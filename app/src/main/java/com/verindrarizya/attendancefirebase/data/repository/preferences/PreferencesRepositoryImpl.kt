@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.data.repository
+package com.verindrarizya.attendancefirebase.data.repository.preferences
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -15,17 +15,19 @@ object DataStoreKey {
 }
 
 @Singleton
-class PreferencesRepository @Inject constructor(
+class PreferencesRepositoryImpl @Inject constructor(
     private val dataStore: DataStore<Preferences>
-) {
+) : PreferencesRepository {
 
-    val isUserAlreadyOnBoarded: Flow<Boolean> = dataStore.data.map { preferences ->
+    override fun isAlreadyOnBoarded(): Flow<Boolean> = dataStore.data.map { preferences ->
         preferences[DataStoreKey.OnBoardedKey] ?: false
     }
 
-    fun setUserOnBoarded() = runBlocking {
-        dataStore.edit { settings ->
-            settings[DataStoreKey.OnBoardedKey] = true
+    override fun setOnBoarded() {
+        runBlocking {
+            dataStore.edit { settings ->
+                settings[DataStoreKey.OnBoardedKey] = true
+            }
         }
     }
 }

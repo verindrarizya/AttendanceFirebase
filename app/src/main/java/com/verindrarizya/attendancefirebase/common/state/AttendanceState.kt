@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.util
+package com.verindrarizya.attendancefirebase.common.state
 
 enum class AttendanceState(val value: String) {
     CheckIn("Check In"),

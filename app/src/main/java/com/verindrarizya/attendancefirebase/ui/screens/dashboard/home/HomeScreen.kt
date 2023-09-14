@@ -51,6 +51,7 @@ import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.R
+import com.verindrarizya.attendancefirebase.common.util.Resource
 import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.CircleButton
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
@@ -66,7 +67,6 @@ import com.verindrarizya.attendancefirebase.ui.theme.OrangeRedish
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
-import com.verindrarizya.attendancefirebase.util.ResourceState
 
 @Composable
 fun HomeScreen(
@@ -218,17 +218,17 @@ fun HomeScreen(
                 } else {
                     when (homeUiState) {
                         is HomeUiState.CheckInUiState -> {
-                            when (homeUiState.listOfOfficeResourceState) {
-                                is ResourceState.Error -> {
+                            when (homeUiState.listOfOfficeResource) {
+                                is Resource.Error -> {
                                     item {
                                         ErrorLayout()
                                     }
                                 }
 
-                                ResourceState.Init -> { /* Do Nothing */
+                                Resource.Init -> { /* Do Nothing */
                                 }
 
-                                ResourceState.Loading -> {
+                                Resource.Loading -> {
                                     item {
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -239,9 +239,9 @@ fun HomeScreen(
                                     }
                                 }
 
-                                is ResourceState.Success -> {
+                                is Resource.Success -> {
                                     items(
-                                        homeUiState.listOfOfficeResourceState.data,
+                                        homeUiState.listOfOfficeResource.data,
                                         key = { it.id }) {
                                         AsyncImageListItem(
                                             modifier = Modifier
@@ -359,7 +359,7 @@ fun HomeScreenSuccessCheckInStatePreview() {
             onButtonAttendanceClicked = { },
             homeUiState = HomeUiState.CheckInUiState(
                 isLoading = false,
-                listOfOfficeResourceState = ResourceState.Success(dummyOffices)
+                listOfOfficeResource = Resource.Success(dummyOffices)
             ),
             onSelectOffice = {},
             onRefresh = {}
@@ -457,7 +457,7 @@ fun HomeScreenOfficeErrorCheckInUiStatePreview() {
         HomeScreen(
             homeUiState = HomeUiState.CheckInUiState(
                 isLoading = false,
-                listOfOfficeResourceState = ResourceState.Error("Error Gan")
+                listOfOfficeResource = Resource.Error("Error Gan")
             ),
             onIconNotificationClick = {},
             onSelectOffice = {},

@@ -1,12 +1,12 @@
-package com.verindrarizya.attendancefirebase.data.repository
+package com.verindrarizya.attendancefirebase.data.repository.auth
 
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.ktx.userProfileChangeRequest
-import com.verindrarizya.attendancefirebase.util.AuthState
-import com.verindrarizya.attendancefirebase.util.ResourceState
+import com.verindrarizya.attendancefirebase.common.state.AuthState
+import com.verindrarizya.attendancefirebase.common.util.Resource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -14,11 +14,11 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AuthRepository @Inject constructor(
+class AuthRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
-) {
+) : AuthRepository {
 
-    val authStateFlow: Flow<AuthState> = callbackFlow {
+    override fun currentAuthState(): Flow<AuthState> = callbackFlow {
 
         val listener = AuthStateListener { p0 ->
             p0.currentUser?.let {
@@ -31,19 +31,19 @@ class AuthRepository @Inject constructor(
         awaitClose { auth.removeAuthStateListener(listener) }
     }
 
-    fun register(
+    override fun register(
         email: String,
         password: String,
         fullName: String
-    ): Flow<ResourceState<String>> = callbackFlow {
-        trySend(ResourceState.Loading)
+    ): Flow<Resource<String>> = callbackFlow {
+        trySend(Resource.Loading)
 
         val profileUpdatesListener = OnCompleteListener<Void> { task ->
             if (task.isSuccessful) {
-                trySend(ResourceState.Success("Register Success"))
+                trySend(Resource.Success("Register Success"))
             } else {
                 trySend(
-                    ResourceState.Error(
+                    Resource.Error(
                         task.exception?.message ?: "Register Failed"
                     )
                 )
@@ -59,7 +59,7 @@ class AuthRepository @Inject constructor(
                 auth.currentUser!!.updateProfile(profileUpdates)
                     .addOnCompleteListener(profileUpdatesListener)
             } else {
-                trySend(ResourceState.Error(task.exception?.message ?: "Register Failed"))
+                trySend(Resource.Error(task.exception?.message ?: "Register Failed"))
             }
         }
 
@@ -68,17 +68,17 @@ class AuthRepository @Inject constructor(
         awaitClose { }
     }
 
-    fun login(
+    override fun login(
         email: String,
         password: String,
-    ): Flow<ResourceState<String>> = callbackFlow {
-        trySend(ResourceState.Loading)
+    ): Flow<Resource<String>> = callbackFlow {
+        trySend(Resource.Loading)
 
         val listener = OnCompleteListener<AuthResult> {
             if (it.isSuccessful) {
-                trySend(ResourceState.Success("Login Success"))
+                trySend(Resource.Success("Login Success"))
             } else {
-                trySend(ResourceState.Error(it.exception?.message ?: "Login Failed"))
+                trySend(Resource.Error(it.exception?.message ?: "Login Failed"))
             }
         }
 
@@ -87,7 +87,7 @@ class AuthRepository @Inject constructor(
         awaitClose { }
     }
 
-    fun signOut() {
+    override fun signOut() {
         auth.signOut()
     }
 }
