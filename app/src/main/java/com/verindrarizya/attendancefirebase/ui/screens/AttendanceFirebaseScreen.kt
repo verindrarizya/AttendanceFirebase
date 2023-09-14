@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.verindrarizya.attendancefirebase.common.state.AuthState
+import com.verindrarizya.attendancefirebase.core.data.state.AuthState
 import com.verindrarizya.attendancefirebase.ui.navigation.authGraph
 import com.verindrarizya.attendancefirebase.ui.navigation.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive

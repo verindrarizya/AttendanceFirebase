@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Attendance Firebase"
 include ':app'
+include ':core'
+include ':common'
