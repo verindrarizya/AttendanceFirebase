@@ -20,3 +20,4 @@ https://github.com/verindrarizya/AttendanceFirebase/assets/65704224/36624789-ddb
 - [Lottie](https://lottiefiles.com/blog/working-with-lottie/getting-started-with-lottie-animations-in-android-app), is a mobile library for Android and iOS that parses Adobe After Effects animations exported as json with Bodymovin and renders them natively on mobile.
 - [Coil - Compose](https://coil-kt.github.io/coil/compose/), an image loading library for Android backed by Kotlin Coroutines.
 - [Firebase Realtime Database](https://firebase.google.com/docs/database), store and sync data with firebase NoSQL cloud database.
+- Implementing Modularization
