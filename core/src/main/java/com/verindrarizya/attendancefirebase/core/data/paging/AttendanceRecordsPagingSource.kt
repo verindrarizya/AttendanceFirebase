@@ -5,6 +5,7 @@ import androidx.paging.PagingState
 import com.google.firebase.database.DatabaseReference
 import com.verindrarizya.attendancefirebase.core.data.model.firebase.toAttendance
 import com.verindrarizya.attendancefirebase.core.entity.AttendanceRecord
+import com.verindrarizya.attendancefirebase.core.util.CalendarUtils
 import kotlinx.coroutines.tasks.await
 
 class AttendanceRecordsPagingSource(
@@ -36,7 +37,7 @@ class AttendanceRecordsPagingSource(
 
             val lastAttendanceRecordDate = attendanceRecords.last().date
             val nextKey =
-                com.verindrarizya.attendancefirebase.common.util.CalendarUtils.getPreviousDayDate(
+                CalendarUtils.getPreviousDayDate(
                     lastAttendanceRecordDate
                 )
 

@@ -1,4 +1,4 @@
-package com.verindrarizya.attendancefirebase.common.util
+package com.verindrarizya.attendancefirebase.core.util
 
 sealed class Resource<out T> {
     object Init : Resource<Nothing>()

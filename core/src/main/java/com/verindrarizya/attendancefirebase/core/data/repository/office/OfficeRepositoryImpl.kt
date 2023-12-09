@@ -7,6 +7,7 @@ import com.google.firebase.database.ValueEventListener
 import com.verindrarizya.attendancefirebase.core.data.model.firebase.OfficeSnapshot
 import com.verindrarizya.attendancefirebase.core.data.model.firebase.toOffice
 import com.verindrarizya.attendancefirebase.core.entity.Office
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -20,7 +21,7 @@ class OfficeRepositoryImpl @Inject constructor(
 
     private val officesReference = firebaseDatabase.getReference("offices")
 
-    override fun getOffices(): Flow<com.verindrarizya.attendancefirebase.common.util.Resource<List<Office>>> =
+    override fun getOffices(): Flow<Resource<List<Office>>> =
         callbackFlow {
 
             val officesValueEventListener = object : ValueEventListener {
@@ -32,14 +33,14 @@ class OfficeRepositoryImpl @Inject constructor(
                     val offices = officesSnapshot.map { it.toOffice() }
 
                     trySend(
-                        com.verindrarizya.attendancefirebase.common.util.Resource.Success(
+                        Resource.Success(
                             offices
                         )
                     )
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Error(error.message))
+                    trySend(Resource.Error(error.message))
                 }
             }
 

@@ -4,16 +4,17 @@ import com.verindrarizya.attendancefirebase.core.data.paging.AttendanceRecordsPa
 import com.verindrarizya.attendancefirebase.core.data.state.AttendanceState
 import com.verindrarizya.attendancefirebase.core.data.state.TodayAttendanceState
 import com.verindrarizya.attendancefirebase.core.entity.Office
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AttendanceRepository {
 
-    fun checkTodayAttendanceState(): Flow<com.verindrarizya.attendancefirebase.common.util.Resource<TodayAttendanceState>>
+    fun checkTodayAttendanceState(): Flow<Resource<TodayAttendanceState>>
 
     fun recordAttendance(
         office: Office,
         attendanceState: AttendanceState
-    ): Flow<com.verindrarizya.attendancefirebase.common.util.Resource<String>>
+    ): Flow<Resource<String>>
 
     fun getAttendanceRecordsPagingSource(
         startDate: String,

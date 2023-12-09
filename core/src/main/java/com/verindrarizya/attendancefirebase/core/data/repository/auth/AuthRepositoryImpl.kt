@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.google.firebase.auth.ktx.userProfileChangeRequest
 import com.verindrarizya.attendancefirebase.core.data.state.AuthState
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -34,15 +35,15 @@ class AuthRepositoryImpl @Inject constructor(
         email: String,
         password: String,
         fullName: String
-    ): Flow<com.verindrarizya.attendancefirebase.common.util.Resource<String>> = callbackFlow {
-        trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Loading)
+    ): Flow<Resource<String>> = callbackFlow {
+        trySend(Resource.Loading)
 
         val profileUpdatesListener = OnCompleteListener<Void> { task ->
             if (task.isSuccessful) {
-                trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Success("Register Success"))
+                trySend(Resource.Success("Register Success"))
             } else {
                 trySend(
-                    com.verindrarizya.attendancefirebase.common.util.Resource.Error(
+                    Resource.Error(
                         task.exception?.message ?: "Register Failed"
                     )
                 )
@@ -59,7 +60,7 @@ class AuthRepositoryImpl @Inject constructor(
                     .addOnCompleteListener(profileUpdatesListener)
             } else {
                 trySend(
-                    com.verindrarizya.attendancefirebase.common.util.Resource.Error(
+                    Resource.Error(
                         task.exception?.message ?: "Register Failed"
                     )
                 )
@@ -74,15 +75,15 @@ class AuthRepositoryImpl @Inject constructor(
     override fun login(
         email: String,
         password: String,
-    ): Flow<com.verindrarizya.attendancefirebase.common.util.Resource<String>> = callbackFlow {
-        trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Loading)
+    ): Flow<Resource<String>> = callbackFlow {
+        trySend(Resource.Loading)
 
         val listener = OnCompleteListener<AuthResult> {
             if (it.isSuccessful) {
-                trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Success("Login Success"))
+                trySend(Resource.Success("Login Success"))
             } else {
                 trySend(
-                    com.verindrarizya.attendancefirebase.common.util.Resource.Error(
+                    Resource.Error(
                         it.exception?.message ?: "Login Failed"
                     )
                 )

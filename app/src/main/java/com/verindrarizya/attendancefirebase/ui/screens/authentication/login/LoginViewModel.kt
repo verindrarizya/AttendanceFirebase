@@ -3,6 +3,7 @@ package com.verindrarizya.attendancefirebase.ui.screens.authentication.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.verindrarizya.attendancefirebase.core.data.repository.auth.AuthRepository
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +22,8 @@ class LoginViewModel @Inject constructor(
     private val _loginUiState: MutableStateFlow<LoginUiState> = MutableStateFlow(LoginUiState())
     val loginUiState = _loginUiState.asStateFlow()
 
-    private val _loginResource: MutableStateFlow<com.verindrarizya.attendancefirebase.common.util.Resource<String>> =
-        MutableStateFlow(com.verindrarizya.attendancefirebase.common.util.Resource.Init)
+    private val _loginResource: MutableStateFlow<Resource<String>> =
+        MutableStateFlow(Resource.Init)
     val loginResourceState = _loginResource.asStateFlow()
 
     private val _message: MutableSharedFlow<String> = MutableSharedFlow()
@@ -40,7 +41,7 @@ class LoginViewModel @Inject constructor(
         loginUiState.value.apply {
             viewModelScope.launch {
                 authRepository.login(email, password).collect {
-                    if (it is com.verindrarizya.attendancefirebase.common.util.Resource.Error) {
+                    if (it is Resource.Error) {
                         _message.emit(it.message)
                     }
                     _loginResource.value = it

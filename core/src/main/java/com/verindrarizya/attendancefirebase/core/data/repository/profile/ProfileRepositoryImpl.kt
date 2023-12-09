@@ -10,6 +10,7 @@ import com.verindrarizya.attendancefirebase.core.data.model.firebase.UserProfile
 import com.verindrarizya.attendancefirebase.core.data.model.firebase.toUserProfile
 import com.verindrarizya.attendancefirebase.core.entity.User
 import com.verindrarizya.attendancefirebase.core.entity.UserProfile
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -27,9 +28,9 @@ class ProfileRepositoryImpl @Inject constructor(
         email = auth.currentUser?.email ?: ""
     )
 
-    override fun getProfileData(): Flow<com.verindrarizya.attendancefirebase.common.util.Resource<UserProfile>> =
+    override fun getProfileData(): Flow<Resource<UserProfile>> =
         callbackFlow {
-            trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Loading)
+            trySend(Resource.Loading)
 
             val userProfileRef = firebaseDatabase.reference
                 .child("profile")
@@ -40,11 +41,11 @@ class ProfileRepositoryImpl @Inject constructor(
                     val userProfileSnapshot = snapshot.getValue<UserProfileSnapshot>()
 
                     if (userProfileSnapshot == null) {
-                        trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Error("Data Not Found"))
+                        trySend(Resource.Error("Data Not Found"))
                     } else {
                         val userProfile = userProfileSnapshot.toUserProfile()
                         trySend(
-                            com.verindrarizya.attendancefirebase.common.util.Resource.Success(
+                            Resource.Success(
                                 userProfile
                             )
                         )
@@ -53,7 +54,7 @@ class ProfileRepositoryImpl @Inject constructor(
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    trySend(com.verindrarizya.attendancefirebase.common.util.Resource.Error(error.message))
+                    trySend(Resource.Error(error.message))
                 }
             }
 

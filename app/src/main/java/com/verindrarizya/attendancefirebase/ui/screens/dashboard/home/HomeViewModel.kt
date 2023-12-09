@@ -7,6 +7,7 @@ import com.verindrarizya.attendancefirebase.core.data.repository.office.OfficeRe
 import com.verindrarizya.attendancefirebase.core.data.state.AttendanceState
 import com.verindrarizya.attendancefirebase.core.data.state.TodayAttendanceState
 import com.verindrarizya.attendancefirebase.core.entity.Office
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -26,7 +27,7 @@ private data class HomeViewModelState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val isError: Boolean = false,
-    val listOfOfficeResource: com.verindrarizya.attendancefirebase.common.util.Resource<List<Office>> = com.verindrarizya.attendancefirebase.common.util.Resource.Loading,
+    val listOfOfficeResource: Resource<List<Office>> = Resource.Loading,
     val selectedOffice: Office? = null
 ) {
 
@@ -84,21 +85,21 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             attendanceRepository.checkTodayAttendanceState().collect { resourceState ->
                 when (resourceState) {
-                    is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
+                    is Resource.Error -> {
                         _homeViewModelState.update {
                             it.copy(isLoading = false, isError = true)
                         }
                         _messageFlow.emit(resourceState.message)
                     }
 
-                    com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
+                    Resource.Init -> { /* Do Nothing */
                     }
 
-                    com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
+                    Resource.Loading -> {
                         _homeViewModelState.update { it.copy(isLoading = true, isError = false) }
                     }
 
-                    is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
+                    is Resource.Success -> {
                         processTodayAttendanceState(resourceState.data)
                     }
                 }
@@ -176,19 +177,19 @@ class HomeViewModel @Inject constructor(
     ) {
         attendanceRepository.recordAttendance(office, attendanceState).collect { resourceState ->
             when (resourceState) {
-                is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
+                is Resource.Error -> {
                     _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.message)
                 }
 
-                com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
+                Resource.Init -> { /* Do Nothing */
                 }
 
-                com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
+                Resource.Loading -> {
                     _homeViewModelState.update { it.copy(isLoading = true) }
                 }
 
-                is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
+                is Resource.Success -> {
                     _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.data)
                 }

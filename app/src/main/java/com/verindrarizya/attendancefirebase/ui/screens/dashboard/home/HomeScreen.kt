@@ -52,6 +52,7 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.core.entity.Office
+import com.verindrarizya.attendancefirebase.core.util.Resource
 import com.verindrarizya.attendancefirebase.ui.composables.widget.AsyncImageListItem
 import com.verindrarizya.attendancefirebase.ui.composables.widget.CircleButton
 import com.verindrarizya.attendancefirebase.ui.composables.widget.ListItem
@@ -218,16 +219,16 @@ fun HomeScreen(
                     when (homeUiState) {
                         is HomeUiState.CheckInUiState -> {
                             when (homeUiState.listOfOfficeResource) {
-                                is com.verindrarizya.attendancefirebase.common.util.Resource.Error -> {
+                                is Resource.Error -> {
                                     item {
                                         ErrorLayout()
                                     }
                                 }
 
-                                com.verindrarizya.attendancefirebase.common.util.Resource.Init -> { /* Do Nothing */
+                                Resource.Init -> { /* Do Nothing */
                                 }
 
-                                com.verindrarizya.attendancefirebase.common.util.Resource.Loading -> {
+                                Resource.Loading -> {
                                     item {
                                         Box(
                                             modifier = Modifier.fillMaxWidth(),
@@ -238,7 +239,7 @@ fun HomeScreen(
                                     }
                                 }
 
-                                is com.verindrarizya.attendancefirebase.common.util.Resource.Success -> {
+                                is Resource.Success -> {
                                     items(
                                         homeUiState.listOfOfficeResource.data,
                                         key = { it.id }) {
@@ -358,7 +359,7 @@ fun HomeScreenSuccessCheckInStatePreview() {
             onButtonAttendanceClicked = { },
             homeUiState = HomeUiState.CheckInUiState(
                 isLoading = false,
-                listOfOfficeResource = com.verindrarizya.attendancefirebase.common.util.Resource.Success(
+                listOfOfficeResource = Resource.Success(
                     dummyOffices
                 )
             ),
@@ -458,7 +459,7 @@ fun HomeScreenOfficeErrorCheckInUiStatePreview() {
         HomeScreen(
             homeUiState = HomeUiState.CheckInUiState(
                 isLoading = false,
-                listOfOfficeResource = com.verindrarizya.attendancefirebase.common.util.Resource.Error(
+                listOfOfficeResource = Resource.Error(
                     "Error Gan"
                 )
             ),
