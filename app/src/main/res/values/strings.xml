@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Attendance Firebase</string>
+    <string name="app_name">Attendance</string>
     <string name="onboarding_record_attendance_message">Record Your Attendance From Anywhere You Like</string>
     <string name="onboarding_attendance_history_message">Keeping Track Of Attendance Records Is Easier Than Ever</string>
     <string name="onboarding_available_office_message">Discover Selection Of Available Office</string>
