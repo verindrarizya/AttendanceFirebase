@@ -132,9 +132,7 @@ fun ProfileScreen(
                             contentDescription = null,
                             contentScale = ContentScale.FillWidth
                         )
-                        Column(
-                            modifier = Modifier.statusBarsPadding()
-                        ) {
+                        Column {
                             TopAppBar(
                                 title = {
                                     Text(

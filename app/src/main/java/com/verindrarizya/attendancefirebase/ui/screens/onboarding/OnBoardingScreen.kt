@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -115,7 +114,6 @@ fun OnBoardingScreen(
 
     Column(
         modifier = modifier
-            .statusBarsPadding()
             .fillMaxSize()
     ) {
         Spacer(Modifier.height(16.dp))

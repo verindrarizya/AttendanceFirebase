@@ -73,7 +73,7 @@ fun NavGraphBuilder.onBoardingScreen(
         exitTransition = exitTransition
     ) {
         OnBoardingScreen(
-            onButtonStartedClicked = onButtonStartedClicked
+            onButtonStartedClicked = onButtonStartedClicked,
         )
     }
 }

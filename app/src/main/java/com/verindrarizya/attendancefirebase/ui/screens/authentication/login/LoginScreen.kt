@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -48,12 +47,6 @@ fun LoginScreen(
     val loginUiState by viewModel.loginUiState.collectAsStateWithLifecycle()
     val loginResourceState by viewModel.loginResourceState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-
-    LaunchedEffect(Unit) {
-        (context as ComponentActivity).enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.dark(R.color.statusBarColor)
-        )
-    }
 
     LaunchedEffect(Unit) {
         viewModel.message.collect {
