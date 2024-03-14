@@ -2,6 +2,7 @@ package com.verindrarizya.attendancefirebase.ui.screens.preload
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -18,7 +19,9 @@ fun PreloadingScreen(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .statusBarsPadding()
+            .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         val composition by rememberLottieComposition(

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +39,7 @@ fun AuthTemplate(
                 painter = painterResource(R.drawable.bg_auth),
                 contentScale = ContentScale.FillBounds
             )
+            .statusBarsPadding()
             .padding(horizontal = 8.dp)
             .fillMaxSize()
     ) {
