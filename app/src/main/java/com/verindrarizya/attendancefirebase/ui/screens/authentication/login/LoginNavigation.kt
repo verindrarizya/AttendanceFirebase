@@ -1,5 +1,9 @@
 package com.verindrarizya.attendancefirebase.ui.screens.authentication.login
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -18,9 +22,15 @@ fun NavController.navigateToLogin(
 }
 
 fun NavGraphBuilder.loginScreen(
-    onNavigateToRegisterScreen: () -> Unit
+    onNavigateToRegisterScreen: () -> Unit,
+    enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
+    exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition
 ) {
-    composable(route = LoginDestination.routeName) {
+    composable(
+        route = LoginDestination.routeName,
+        enterTransition = enterTransition,
+        exitTransition = exitTransition
+    ) {
         LoginScreen(
             onNavigateToRegisterScreen = onNavigateToRegisterScreen
         )

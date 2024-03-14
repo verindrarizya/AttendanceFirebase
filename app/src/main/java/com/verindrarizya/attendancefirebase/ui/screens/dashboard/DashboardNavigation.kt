@@ -1,5 +1,14 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -17,8 +26,47 @@ fun NavController.navigateToDashboard(
     this.navigate(DashboardDestination.routeName, navOptions(builder))
 }
 
-fun NavGraphBuilder.dashboardScreen() {
-    composable(route = DashboardDestination.routeName) {
+fun NavGraphBuilder.dashboardScreen(
+    enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        val slideInLeft = slideInHorizontally(
+            animationSpec = tween(
+                durationMillis = 300
+            ),
+            initialOffsetX = { 200 }
+        )
+
+        val fadeIn = fadeIn(
+            animationSpec = tween(
+                durationMillis = 300
+            ),
+            initialAlpha = 0.8f
+        )
+
+        slideInLeft + fadeIn
+    },
+    exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+        val slideOutRight = slideOutHorizontally(
+            animationSpec = tween(
+                durationMillis = 300
+            ),
+            targetOffsetX = { 200 }
+        )
+
+        val fadeOut = fadeOut(
+            animationSpec = tween(
+                durationMillis = 300
+            ),
+            targetAlpha = 0.8f
+        )
+
+        slideOutRight + fadeOut
+    }
+) {
+    composable(
+        route = DashboardDestination.routeName,
+        enterTransition = enterTransition,
+        exitTransition = exitTransition
+    ) {
         DashboardScreen()
     }
 }

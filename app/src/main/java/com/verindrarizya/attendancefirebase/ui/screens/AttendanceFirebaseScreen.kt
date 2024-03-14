@@ -21,6 +21,7 @@ import com.verindrarizya.attendancefirebase.ui.screens.onboarding.navigateToOnBo
 import com.verindrarizya.attendancefirebase.ui.screens.onboarding.onBoardingScreen
 import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingDestination
 import com.verindrarizya.attendancefirebase.ui.screens.preload.preloadingScreen
+import kotlinx.coroutines.delay
 
 @Composable
 fun AttendanceFirebaseScreen(
@@ -47,6 +48,7 @@ fun AttendanceFirebaseScreen(
                         popUpToInclusive(navController.graph.id)
                     }
                 } else {
+                    delay(3_000)
                     navController.navigateToOnBoarding {
                         popUpToInclusive(navController.graph.id)
                     }

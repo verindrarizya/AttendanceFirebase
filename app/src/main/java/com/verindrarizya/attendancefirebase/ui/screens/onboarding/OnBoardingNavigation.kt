@@ -1,5 +1,14 @@
 package com.verindrarizya.attendancefirebase.ui.screens.onboarding
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
@@ -19,8 +28,45 @@ fun NavController.navigateToOnBoarding(
 
 fun NavGraphBuilder.onBoardingScreen(
     onButtonStartedClicked: () -> Unit,
+    enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+        val slideTop = slideInVertically(
+            animationSpec = tween(
+                durationMillis = 300
+            ),
+            initialOffsetY = { 100 }
+        )
+
+        val fadeIn = fadeIn(
+            animationSpec = tween(
+                durationMillis = 300
+            ),
+            initialAlpha = 0.8f
+        )
+
+        slideTop + fadeIn
+    },
+    exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) = {
+        val slideToLeft = slideOutHorizontally(
+            animationSpec = tween(
+                durationMillis = 2000
+            ),
+            targetOffsetX = { -300 }
+        )
+
+        val fadeOut = fadeOut(
+            animationSpec = tween(
+                durationMillis = 2000
+            )
+        )
+
+        slideToLeft + fadeOut
+    }
 ) {
-    composable(route = OnBoardingDestination.routeName) {
+    composable(
+        route = OnBoardingDestination.routeName,
+        enterTransition = enterTransition,
+        exitTransition = exitTransition
+    ) {
         OnBoardingScreen(
             onButtonStartedClicked = onButtonStartedClicked
         )
