@@ -1,8 +1,9 @@
-package com.verindrarizya.attendancefirebase.ui.navigation
+package com.verindrarizya.attendancefirebase.ui.screens.authentication
 
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.EaseInOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -14,6 +15,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.LoginDestination
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.loginScreen
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.navigateToLogin
@@ -30,14 +33,16 @@ private object GlobalAuthNavigationAnimation {
     val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
         val slideUp = slideInVertically(
             animationSpec = tween(
-                durationMillis = 300
+                durationMillis = 400,
+                easing = EaseInOut
             ),
             initialOffsetY = { 300 }
         )
 
         val fadeOut = fadeIn(
             animationSpec = tween(
-                durationMillis = 300
+                durationMillis = 400,
+                easing = EaseInOut
             ),
             initialAlpha = 0.8f
         )
@@ -47,19 +52,21 @@ private object GlobalAuthNavigationAnimation {
     val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
         val slideDown = slideOutVertically(
             animationSpec = tween(
-                durationMillis = 300
+                durationMillis = 400,
+                easing = EaseInOut
             ),
             targetOffsetY = { 300 }
         )
 
         val fadeOut = fadeOut(
             animationSpec = tween(
-                durationMillis = 300
+                durationMillis = 400,
+                easing = EaseInOut
             ),
             targetAlpha = 0.8f
         )
 
-        slideDown
+        slideDown + fadeOut
     }
 }
 
