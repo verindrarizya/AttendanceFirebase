@@ -3,13 +3,13 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.history
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object HistoryDestination : Destination {
-    override val routeName: String = "history"
-}
+@Serializable
+object HistoryDestination : Destination
 
 fun NavGraphBuilder.historyScreen() {
-    composable(route = HistoryDestination.routeName) {
+    composable<HistoryDestination> {
         HistoryScreen()
     }
 }

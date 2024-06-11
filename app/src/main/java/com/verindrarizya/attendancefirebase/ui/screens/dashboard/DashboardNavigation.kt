@@ -16,15 +16,15 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object DashboardDestination : Destination {
-    override val routeName: String = "dashboard"
-}
+@Serializable
+object DashboardDestination : Destination
 
 fun NavController.navigateToDashboard(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    this.navigate(DashboardDestination.routeName, navOptions(builder))
+    this.navigate(DashboardDestination, navOptions(builder))
 }
 
 fun NavGraphBuilder.dashboardScreen(
@@ -67,8 +67,7 @@ fun NavGraphBuilder.dashboardScreen(
         slideOutRight + fadeOut
     }
 ) {
-    composable(
-        route = DashboardDestination.routeName,
+    composable<DashboardDestination>(
         enterTransition = enterTransition,
         exitTransition = exitTransition
     ) {

@@ -3,13 +3,13 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object ProfileDestination : Destination {
-    override val routeName: String = "profile"
-}
+@Serializable
+object ProfileDestination : Destination
 
 fun NavGraphBuilder.profileScreen() {
-    composable(route = ProfileDestination.routeName) {
+    composable<ProfileDestination> {
         ProfileScreen()
     }
 }

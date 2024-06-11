@@ -42,7 +42,7 @@ fun DashboardScreen(
             DashboardBottomNav(
                 currentDestination = currentDestination,
                 onBottomNavItemClick = { screen ->
-                    navController.navigate(screen.routeName) {
+                    navController.navigate(screen.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
@@ -57,7 +57,7 @@ fun DashboardScreen(
             modifier = modifier
                 .padding(paddingValues),
             navController = navController,
-            startDestination = DashboardItemScreen.HomeScreen.routeName,
+            startDestination = DashboardItemScreen.HomeScreen.route,
         ) {
             homeScreen()
             historyScreen()
@@ -79,7 +79,7 @@ fun DashboardBottomNav(
     ) {
         bottomNavItems.forEach {
             val isSelected = currentDestination?.hierarchy?.any { navDestination ->
-                navDestination.route == it.routeName
+                navDestination == currentDestination
             } == true
 
             BottomNavigationItem(

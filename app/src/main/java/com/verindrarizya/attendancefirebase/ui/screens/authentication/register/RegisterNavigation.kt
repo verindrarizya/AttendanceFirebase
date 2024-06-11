@@ -10,15 +10,15 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object RegisterDestination : Destination {
-    override val routeName: String = "register"
-}
+@Serializable
+object RegisterDestination : Destination
 
 fun NavController.navigateToRegister(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    this.navigate(RegisterDestination.routeName, navOptions(builder))
+    this.navigate(RegisterDestination, navOptions(builder))
 }
 
 fun NavGraphBuilder.registerScreen(
@@ -27,8 +27,7 @@ fun NavGraphBuilder.registerScreen(
     enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
     exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition
 ) {
-    composable(
-        route = RegisterDestination.routeName,
+    composable<RegisterDestination>(
         enterTransition = enterTransition,
         exitTransition = exitTransition
     ) {

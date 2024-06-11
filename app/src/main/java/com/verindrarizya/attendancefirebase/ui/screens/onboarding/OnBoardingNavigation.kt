@@ -16,15 +16,15 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object OnBoardingDestination : Destination {
-    override val routeName: String = "OnBoardingDestination"
-}
+@Serializable
+object OnBoardingDestination : Destination
 
 fun NavController.navigateToOnBoarding(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    this.navigate(OnBoardingDestination.routeName, navOptions(builder))
+    this.navigate(OnBoardingDestination, navOptions(builder))
 }
 
 fun NavGraphBuilder.onBoardingScreen(
@@ -67,8 +67,7 @@ fun NavGraphBuilder.onBoardingScreen(
         slideToLeft + fadeOut
     }
 ) {
-    composable(
-        route = OnBoardingDestination.routeName,
+    composable<OnBoardingDestination>(
         enterTransition = enterTransition,
         exitTransition = exitTransition
     ) {

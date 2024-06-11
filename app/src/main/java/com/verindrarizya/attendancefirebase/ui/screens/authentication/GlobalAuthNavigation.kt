@@ -16,7 +16,6 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
-import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.LoginDestination
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.loginScreen
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.navigateToLogin
@@ -24,10 +23,10 @@ import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.R
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.navigateToRegister
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.registerScreen
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.navigateToDashboard
+import kotlinx.serialization.Serializable
 
-object GlobalAuthDestination : Destination {
-    override val routeName: String = "global_auth"
-}
+@Serializable
+object GlobalAuthDestination : Destination
 
 private object GlobalAuthNavigationAnimation {
     val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
@@ -73,25 +72,24 @@ private object GlobalAuthNavigationAnimation {
 fun NavController.navigateToGlobalAuth(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    this.navigate(GlobalAuthDestination.routeName, navOptions(builder))
+    this.navigate(GlobalAuthDestination, navOptions(builder))
 }
 
 fun NavGraphBuilder.authGraph(
     navController: NavController
 ) {
-    navigation(
-        startDestination = LoginDestination.routeName,
-        route = GlobalAuthDestination.routeName
+    navigation<GlobalAuthDestination>(
+        startDestination = LoginDestination
     ) {
         registerScreen(
             onNavigateToLoginScreen = {
                 navController.navigateToLogin {
-                    popUpToInclusive(RegisterDestination)
+                    popUpTo(RegisterDestination) { inclusive = true }
                 }
             },
             onNavigateToDashboardScreen = {
                 navController.navigateToDashboard {
-                    popUpToInclusive(navController.graph.id)
+                    popUpTo(navController.graph.id) { inclusive = true }
                 }
             },
             enterTransition = GlobalAuthNavigationAnimation.enterTransition,
@@ -100,7 +98,7 @@ fun NavGraphBuilder.authGraph(
         loginScreen(
             onNavigateToRegisterScreen = {
                 navController.navigateToRegister {
-                    popUpToInclusive(LoginDestination)
+                    popUpTo(LoginDestination) { inclusive = true }
                 }
             },
             enterTransition = GlobalAuthNavigationAnimation.enterTransition,

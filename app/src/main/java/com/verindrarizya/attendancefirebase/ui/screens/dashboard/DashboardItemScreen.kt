@@ -3,6 +3,7 @@ package com.verindrarizya.attendancefirebase.ui.screens.dashboard
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.verindrarizya.attendancefirebase.R
+import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.history.HistoryDestination
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.home.HomeDestination
 import com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile.ProfileDestination
@@ -14,24 +15,24 @@ val dashboardItems = listOf(
 )
 
 sealed class DashboardItemScreen(
-    val routeName: String,
+    val route: Destination,
     @StringRes val title: Int,
     @DrawableRes val icon: Int,
 ) {
-    object HomeScreen : DashboardItemScreen(
-        routeName = HomeDestination.routeName,
+    data object HomeScreen : DashboardItemScreen(
+        route = HomeDestination,
         title = R.string.home,
         icon = R.drawable.ic_home
     )
 
-    object ProfileScreen : DashboardItemScreen(
-        routeName = ProfileDestination.routeName,
+    data object ProfileScreen : DashboardItemScreen(
+        route = ProfileDestination,
         title = R.string.profile,
         icon = R.drawable.ic_profile_nav
     )
 
-    object HistoryScreen : DashboardItemScreen(
-        routeName = HistoryDestination.routeName,
+    data object HistoryScreen : DashboardItemScreen(
+        route = HistoryDestination,
         title = R.string.history,
         icon = R.drawable.ic_history
     )

@@ -11,7 +11,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.verindrarizya.attendancefirebase.core.data.state.AuthState
-import com.verindrarizya.attendancefirebase.ui.navigation.popUpToInclusive
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.authGraph
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.RegisterDestination
@@ -37,20 +36,20 @@ fun AttendanceFirebaseScreen(
             // first -> onboarded flag,
             // second -> AuthState
             if (data.second == AuthState.SignedIn) {
-                if (currentBackStack?.destination?.route != RegisterDestination.routeName) {
+                if (currentBackStack?.destination?.route != RegisterDestination::class.simpleName) {
                     navController.navigateToDashboard {
-                        popUpToInclusive(navController.graph.id)
+                        popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
             } else {
                 if (data.first) {
                     navController.navigateToGlobalAuth {
-                        popUpToInclusive(navController.graph.id)
+                        popUpTo(navController.graph.id) { inclusive = true }
                     }
                 } else {
                     delay(3_000)
                     navController.navigateToOnBoarding {
-                        popUpToInclusive(navController.graph.id)
+                        popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
             }
@@ -60,7 +59,7 @@ fun AttendanceFirebaseScreen(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = PreloadingDestination.routeName
+        startDestination = PreloadingDestination
     ) {
         preloadingScreen()
         onBoardingScreen(
@@ -69,7 +68,6 @@ fun AttendanceFirebaseScreen(
             }
         )
         authGraph(navController = navController)
-        dashboardScreen(
-        )
+        dashboardScreen()
     }
 }

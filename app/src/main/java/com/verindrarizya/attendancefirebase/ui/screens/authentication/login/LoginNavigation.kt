@@ -10,15 +10,15 @@ import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object LoginDestination : Destination {
-    override val routeName: String = "login"
-}
+@Serializable
+object LoginDestination : Destination
 
 fun NavController.navigateToLogin(
     builder: NavOptionsBuilder.() -> Unit = {}
 ) {
-    this.navigate(LoginDestination.routeName, navOptions(builder))
+    this.navigate(LoginDestination, navOptions(builder))
 }
 
 fun NavGraphBuilder.loginScreen(
@@ -26,8 +26,7 @@ fun NavGraphBuilder.loginScreen(
     enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition,
     exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition
 ) {
-    composable(
-        route = LoginDestination.routeName,
+    composable<LoginDestination>(
         enterTransition = enterTransition,
         exitTransition = exitTransition
     ) {

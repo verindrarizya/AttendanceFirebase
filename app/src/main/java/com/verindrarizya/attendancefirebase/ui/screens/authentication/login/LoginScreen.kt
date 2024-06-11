@@ -2,8 +2,6 @@ package com.verindrarizya.attendancefirebase.ui.screens.authentication.login
 
 import android.annotation.SuppressLint
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

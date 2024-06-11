@@ -13,10 +13,10 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
+import kotlinx.serialization.Serializable
 
-object PreloadingDestination : Destination {
-    override val routeName: String = "PreloadingDestination"
-}
+@Serializable
+object PreloadingDestination : Destination
 
 fun NavGraphBuilder.preloadingScreen(
     enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
@@ -54,8 +54,7 @@ fun NavGraphBuilder.preloadingScreen(
         scaleOutContainer + fadeOut
     }
 ) {
-    composable(
-        route = PreloadingDestination.routeName,
+    composable<PreloadingDestination>(
         enterTransition = enterTransition,
         exitTransition = exitTransition
     ) {

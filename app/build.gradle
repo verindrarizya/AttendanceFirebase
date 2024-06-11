@@ -3,6 +3,8 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id 'kotlinx-serialization'
+    id 'org.jetbrains.kotlin.plugin.serialization'
 }
 
 apply from: "../shared_dependencies.gradle"
@@ -80,6 +82,8 @@ dependencies {
     implementation "com.airbnb.android:lottie-compose:$lottie_compose_version"
 
     implementation "io.coil-kt:coil-compose:$coil_compose_version"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_version"
 
     // Paging Compose Integration
     implementation "androidx.paging:paging-compose:$paging_version"
