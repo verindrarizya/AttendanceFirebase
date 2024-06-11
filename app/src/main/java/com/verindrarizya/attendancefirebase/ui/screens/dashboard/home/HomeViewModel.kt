@@ -9,7 +9,6 @@ import com.verindrarizya.attendancefirebase.core.data.state.TodayAttendanceState
 import com.verindrarizya.attendancefirebase.core.entity.Office
 import com.verindrarizya.attendancefirebase.core.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +27,6 @@ private data class HomeViewModelState(
     val isLoading: Boolean = true,
     val isRefreshing: Boolean = false,
     val isError: Boolean = false,
-    val isDialogCameraShow: Boolean = false,
     val listOfOfficeResource: Resource<List<Office>> = Resource.Loading,
     val selectedOffice: Office? = null
 ) {
@@ -39,7 +37,6 @@ private data class HomeViewModelState(
                 isLoading = isLoading,
                 isRefreshing = isRefreshing,
                 isError = isError,
-                isDialogCameraShow = isDialogCameraShow,
                 selectedOffice = selectedOffice!!
             )
         } else {
@@ -47,7 +44,6 @@ private data class HomeViewModelState(
                 isLoading = isLoading,
                 isRefreshing = isRefreshing,
                 isError = isError,
-                isDialogCameraShow = isDialogCameraShow,
                 listOfOfficeResource = listOfOfficeResource,
                 selectedOffice = selectedOffice
             )
@@ -148,26 +144,17 @@ class HomeViewModel @Inject constructor(
 
     fun recordAttendance() {
         viewModelScope.launch {
-            val currentHomeViewModelState = _homeViewModelState.value
-
-            if (currentHomeViewModelState.todayAttendanceState == TodayAttendanceState.CheckedOut) {
-                _messageFlow.emit("Today Attendance Already Recorded")
-                return@launch
-            }
-
-            if (currentHomeViewModelState.selectedOffice == null) {
+            if (_homeViewModelState.value.selectedOffice == null) {
                 _messageFlow.emit("Please Select an Office")
                 return@launch
             }
 
-            when (val attendanceState = currentHomeViewModelState.todayAttendanceState) {
+            when (val attendanceState = _homeViewModelState.value.todayAttendanceState) {
                 is TodayAttendanceState.CheckedIn -> {
-                    dummyLaunchScanCamera(onSuccess = {
-                        recordNewAttendance(
-                            attendanceState = AttendanceState.CheckOut,
-                            office = attendanceState.office
-                        )
-                    })
+                    recordNewAttendance(
+                        attendanceState = AttendanceState.CheckOut,
+                        office = attendanceState.office
+                    )
                 }
 
                 TodayAttendanceState.CheckedOut -> {
@@ -175,32 +162,12 @@ class HomeViewModel @Inject constructor(
                 }
 
                 TodayAttendanceState.NoRecord -> {
-                    dummyLaunchScanCamera(onSuccess = {
-                        recordNewAttendance(
-                            office = _homeViewModelState.value.selectedOffice!!,
-                            attendanceState = AttendanceState.CheckIn
-                        )
-                    })
+                    recordNewAttendance(
+                        office = _homeViewModelState.value.selectedOffice!!,
+                        attendanceState = AttendanceState.CheckIn
+                    )
                 }
             }
-        }
-    }
-
-    fun dismissDialog() {
-        viewModelScope.launch {
-            _homeViewModelState.update { it.copy(isDialogCameraShow = false) }
-        }
-    }
-
-    private fun dummyLaunchScanCamera(
-        onSuccess: suspend CoroutineScope.() -> Unit
-    ) {
-        viewModelScope.launch {
-            _homeViewModelState.update { it.copy(isDialogCameraShow = true) }
-            // simulate loading when scanning
-            delay(10_000)
-            _homeViewModelState.update { it.copy(isDialogCameraShow = false) }
-            onSuccess()
         }
     }
 
@@ -211,9 +178,7 @@ class HomeViewModel @Inject constructor(
         attendanceRepository.recordAttendance(office, attendanceState).collect { resourceState ->
             when (resourceState) {
                 is Resource.Error -> {
-                    _homeViewModelState.update {
-                        it.copy(isLoading = false)
-                    }
+                    _homeViewModelState.update { it.copy(isLoading = false) }
                     _messageFlow.emit(resourceState.message)
                 }
 
@@ -221,12 +186,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 Resource.Loading -> {
-                    _homeViewModelState.update {
-                        it.copy(
-                            isLoading = true,
-                            isDialogCameraShow = false
-                        )
-                    }
+                    _homeViewModelState.update { it.copy(isLoading = true) }
                 }
 
                 is Resource.Success -> {

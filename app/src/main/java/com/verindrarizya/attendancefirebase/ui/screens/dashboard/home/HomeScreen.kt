@@ -1,12 +1,7 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.home
 
-import android.content.Context
 import android.widget.Toast
-import androidx.camera.core.CameraSelector
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,26 +40,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.verindrarizya.attendancefirebase.R
 import com.verindrarizya.attendancefirebase.core.entity.Office
 import com.verindrarizya.attendancefirebase.core.util.Resource
@@ -83,9 +67,6 @@ import com.verindrarizya.attendancefirebase.ui.theme.OrangeRedish
 import com.verindrarizya.attendancefirebase.ui.theme.TextDarkBlue
 import com.verindrarizya.attendancefirebase.ui.theme.TextGray
 import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
-import androidx.camera.core.Preview as CameraXPreview
 
 @Composable
 fun HomeScreen(
@@ -107,12 +88,11 @@ fun HomeScreen(
         onSelectOffice = viewModel::selectOffice,
         onIconNotificationClick = {},
         onButtonAttendanceClicked = viewModel::recordAttendance,
-        onDialogCameraDismiss = viewModel::dismissDialog,
         onRefresh = viewModel::refresh
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -120,7 +100,6 @@ fun HomeScreen(
     onSelectOffice: (Office) -> Unit,
     onIconNotificationClick: () -> Unit,
     onButtonAttendanceClicked: () -> Unit,
-    onDialogCameraDismiss: () -> Unit,
     onRefresh: () -> Unit
 ) {
     val lazyListState = rememberLazyListState()
@@ -129,24 +108,9 @@ fun HomeScreen(
         onRefresh = onRefresh
     )
 
-    val cameraPermissionState = rememberPermissionState(
-        android.Manifest.permission.CAMERA
-    )
-
     if (homeUiState.isLoading) {
         LoadingDialog()
     }
-
-    if (homeUiState.isDialogCameraShow) {
-        CameraDialog(onDismissRequest = onDialogCameraDismiss)
-    }
-
-    LaunchedEffect(Unit) {
-        if (!cameraPermissionState.status.isGranted) {
-            cameraPermissionState.launchPermissionRequest()
-        }
-    }
-
 
     Scaffold(
         modifier = modifier,
@@ -215,13 +179,7 @@ fun HomeScreen(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         CircleButton(
-                                            onClick = {
-                                                if (cameraPermissionState.status.isGranted) {
-                                                    onButtonAttendanceClicked()
-                                                } else {
-                                                    cameraPermissionState.launchPermissionRequest()
-                                                }
-                                            },
+                                            onClick = { onButtonAttendanceClicked() },
                                             text = when (homeUiState) {
                                                 is HomeUiState.CheckInUiState -> stringResource(R.string.check_in)
                                                 is HomeUiState.CheckOutUiState -> stringResource(R.string.check_out)
@@ -350,80 +308,6 @@ fun HomeScreen(
 }
 
 @Composable
-fun CameraDialog(
-    modifier: Modifier = Modifier,
-    onDismissRequest: () -> Unit
-) {
-    val lensFacing = CameraSelector.LENS_FACING_FRONT
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-    val preview = CameraXPreview.Builder().build()
-    val previewView = remember { PreviewView(context) }
-    val cameraXSelector = CameraSelector.Builder()
-        .requireLensFacing(lensFacing)
-        .build()
-
-    LaunchedEffect(Unit) {
-        val cameraProvider = context.getCameraProvider()
-        cameraProvider.unbindAll()
-        cameraProvider.bindToLifecycle(lifecycleOwner, cameraXSelector, preview)
-        preview.setSurfaceProvider(previewView.surfaceProvider)
-    }
-
-    Dialog(
-        onDismissRequest = onDismissRequest,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = false,
-            usePlatformDefaultWidth = true
-        ),
-    ) {
-        Card(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(
-                    vertical = 40.dp
-                ),
-            shape = RoundedCornerShape(12.dp)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            horizontal = 8.dp,
-                            vertical = 4.dp
-                        )
-                        .basicMarquee(),
-                    text = stringResource(R.string.scanning_face),
-                    textAlign = TextAlign.Center,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.SemiBold,
-                    color = AttBlue
-                )
-                AndroidView(
-                    modifier = Modifier.fillMaxSize(),
-                    factory = { previewView },
-                    update = {}
-                )
-            }
-        }
-    }
-}
-
-private suspend fun Context.getCameraProvider(): ProcessCameraProvider =
-    suspendCoroutine { continuation ->
-        ProcessCameraProvider.getInstance(this).also { cameraProvider ->
-            cameraProvider.addListener({
-                continuation.resume(cameraProvider.get())
-            }, ContextCompat.getMainExecutor(this))
-        }
-    }
-
-@Composable
 fun ErrorLayout(
     modifier: Modifier = Modifier
 ) {
@@ -477,15 +361,10 @@ fun HomeScreenSuccessCheckInStatePreview() {
                 isLoading = false,
                 listOfOfficeResource = Resource.Success(
                     dummyOffices
-                ),
-                isDialogCameraShow = false,
-                isError = false,
-                isRefreshing = false,
-                selectedOffice = null
+                )
             ),
             onSelectOffice = {},
-            onRefresh = {},
-            onDialogCameraDismiss = {}
+            onRefresh = {}
         )
     }
 }
@@ -499,14 +378,112 @@ fun HomeScreenSuccessCheckOutStatePreview() {
             onButtonAttendanceClicked = { },
             homeUiState = HomeUiState.CheckOutUiState(
                 isLoading = false,
-                isDialogCameraShow = false,
-                isError = false,
-                isRefreshing = false,
                 selectedOffice = dummyOffices[0]
             ),
             onSelectOffice = {},
+            onRefresh = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenLoadingCheckInStatePreview() {
+    AttendanceFirebaseTheme {
+        HomeScreen(
+            homeUiState = HomeUiState.CheckInUiState(
+                isLoading = true
+            ),
+            onSelectOffice = {},
+            onIconNotificationClick = { },
+            onButtonAttendanceClicked = {},
+            onRefresh = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenLoadingCheckOutStatePreview() {
+    AttendanceFirebaseTheme {
+        HomeScreen(
+            homeUiState = HomeUiState.CheckOutUiState(
+                isLoading = true,
+                selectedOffice = dummyOffices[0]
+            ),
+            onSelectOffice = {},
+            onIconNotificationClick = { },
+            onButtonAttendanceClicked = { },
+            onRefresh = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenErrorCheckInStatePreview() {
+    AttendanceFirebaseTheme {
+        HomeScreen(
+            homeUiState = HomeUiState.CheckInUiState(
+                isError = true
+            ),
+            onSelectOffice = {},
+            onIconNotificationClick = {},
+            onButtonAttendanceClicked = {},
+            onRefresh = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenErrorCheckOutStatePreview() {
+    AttendanceFirebaseTheme {
+        HomeScreen(
+            homeUiState = HomeUiState.CheckOutUiState(
+                isError = true,
+                selectedOffice = dummyOffices[0]
+            ),
+            onSelectOffice = {},
+            onIconNotificationClick = {},
+            onButtonAttendanceClicked = {},
+            onRefresh = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenOfficeErrorCheckInUiStatePreview() {
+    AttendanceFirebaseTheme {
+        HomeScreen(
+            homeUiState = HomeUiState.CheckInUiState(
+                isLoading = false,
+                listOfOfficeResource = Resource.Error(
+                    "Error Gan"
+                )
+            ),
+            onIconNotificationClick = {},
+            onSelectOffice = {},
             onRefresh = {},
-            onDialogCameraDismiss = {}
+            onButtonAttendanceClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HomeScreenOfficeErrorCheckOutUiStatePreview() {
+    AttendanceFirebaseTheme {
+        HomeScreen(
+            homeUiState = HomeUiState.CheckOutUiState(
+                isLoading = false,
+                selectedOffice = dummyOffices[0]
+            ),
+            onIconNotificationClick = {},
+            onSelectOffice = {},
+            onRefresh = {},
+            onButtonAttendanceClicked = {}
         )
     }
 }
