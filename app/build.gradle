@@ -84,6 +84,9 @@ dependencies {
 
     implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialization_version"
 
+    implementation "androidx.glance:glance-appwidget:1.1.0"
+    implementation "androidx.glance:glance-material:1.1.0"
+
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_permission_version"
 
     implementation "androidx.camera:camera-core:$camerax_version"

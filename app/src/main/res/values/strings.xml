@@ -31,4 +31,5 @@
     <string name="empty_statement">Sorry, data is empty…</string>
     <string name="refresh">Refresh</string>
     <string name="scanning_face">Scanning Your Face for Attendance, Please Stay Still</string>
+    <string name="loading_widget">Loading Widget…</string>
 </resources>
