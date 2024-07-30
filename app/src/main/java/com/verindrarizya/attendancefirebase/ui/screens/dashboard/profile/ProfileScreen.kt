@@ -1,6 +1,7 @@
 package com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile
 
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -164,7 +165,7 @@ fun ProfileScreen(
                                     ),
                                 name = profileUiState.username,
                                 jobTitle = profileUiState.jobTitle,
-                                painter = painterResource(R.drawable.ic_profile)
+                                drawableRes = R.drawable.ic_profile
                             )
                         }
                     }
@@ -193,7 +194,7 @@ fun ProfileScreen(
                             ),
                         header = "Email",
                         subHeader = profileUiState.email,
-                        painter = painterResource(R.drawable.ic_email)
+                        drawableRes = R.drawable.ic_email
                     )
                 }
                 item {
@@ -206,7 +207,7 @@ fun ProfileScreen(
                             ),
                         header = "Employee ID",
                         subHeader = profileUiState.employeeNumber,
-                        painter = painterResource(R.drawable.ic_employee_id)
+                        drawableRes = R.drawable.ic_employee_id
                     )
                 }
                 item {
@@ -219,7 +220,7 @@ fun ProfileScreen(
                             ),
                         header = "Address",
                         subHeader = profileUiState.address,
-                        painter = painterResource(R.drawable.ic_address)
+                        drawableRes = R.drawable.ic_address
                     )
                 }
                 item {
@@ -231,7 +232,7 @@ fun ProfileScreen(
                                 bottom = 12.dp
                             ),
                         header = "About this app",
-                        painter = painterResource(R.drawable.ic_info),
+                        drawableRes = R.drawable.ic_info,
                         onClick = onAboutInfoClick
                     )
                 }
@@ -244,7 +245,7 @@ fun ProfileScreen(
                                 bottom = 12.dp
                             ),
                         header = "Sign Out",
-                        painter = painterResource(R.drawable.ic_logout),
+                        drawableRes = R.drawable.ic_logout,
                         onClick = onSignOutClick
                     )
                 }
@@ -258,7 +259,7 @@ fun ProfileCard(
     modifier: Modifier = Modifier,
     name: String,
     jobTitle: String,
-    painter: Painter
+    @DrawableRes drawableRes: Int
 ) {
     Card(
         modifier = modifier,
@@ -277,7 +278,7 @@ fun ProfileCard(
             Image(
                 modifier = Modifier
                     .size(150.dp),
-                painter = painter,
+                painter = painterResource(id = drawableRes),
                 contentDescription = "$name Profile Picture",
             )
             Spacer(Modifier.height(16.dp))

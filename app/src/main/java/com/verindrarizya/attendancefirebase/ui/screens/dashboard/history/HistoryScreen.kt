@@ -362,8 +362,8 @@ fun HistoryScreen(
                                                     )
                                                 }
                                             }
-                                            when {
-                                                loadState.append is LoadState.Loading -> {
+                                            when (loadState.append) {
+                                                is LoadState.Loading -> {
                                                     item {
                                                         Box(
                                                             modifier = Modifier
@@ -375,7 +375,7 @@ fun HistoryScreen(
                                                     }
                                                 }
 
-                                                loadState.append is LoadState.Error -> {
+                                                is LoadState.Error -> {
                                                     item {
                                                         Box(
                                                             modifier = Modifier.fillMaxWidth(),
@@ -397,6 +397,8 @@ fun HistoryScreen(
                                                         }
                                                     }
                                                 }
+
+                                                else -> {}
                                             }
                                         }
                                     }

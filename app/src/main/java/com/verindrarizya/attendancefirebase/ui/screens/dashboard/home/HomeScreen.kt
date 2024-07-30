@@ -242,7 +242,8 @@ fun HomeScreen(
                                 is Resource.Success -> {
                                     items(
                                         homeUiState.listOfOfficeResource.data,
-                                        key = { it.id }) {
+                                        key = { it.id }
+                                    ) {
                                         AsyncImageListItem(
                                             modifier = Modifier
                                                 .padding(

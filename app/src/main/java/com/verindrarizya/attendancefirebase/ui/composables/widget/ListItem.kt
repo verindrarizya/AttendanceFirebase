@@ -1,5 +1,6 @@
 package com.verindrarizya.attendancefirebase.ui.composables.widget
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -152,7 +153,7 @@ fun IconListItem(
     headerTextColor: Color = TextDarkBlue,
     subHeader: String? = null,
     subHeaderTextColor: Color = TextGray,
-    painter: Painter,
+    @DrawableRes drawableRes: Int,
     backgroundColor: Color = Color.White,
     onClick: () -> Unit,
     border: BorderStroke? = null
@@ -164,7 +165,7 @@ fun IconListItem(
         subHeader = subHeader,
         subHeaderTextColor = subHeaderTextColor,
         imageSlot = {
-            RoundedCornerIcon(painter = painter)
+            RoundedCornerIcon(drawableRes = drawableRes)
         },
         backgroundColor = backgroundColor,
         onClick = onClick,
@@ -179,7 +180,7 @@ fun IconListItem(
     headerTextColor: Color = TextDarkBlue,
     subHeader: String? = null,
     subHeaderTextColor: Color = TextGray,
-    painter: Painter,
+    @DrawableRes drawableRes: Int,
     backgroundColor: Color = Color.White,
     border: BorderStroke? = null
 ) {
@@ -190,7 +191,7 @@ fun IconListItem(
         subHeader = subHeader,
         subHeaderTextColor = subHeaderTextColor,
         imageSlot = {
-            RoundedCornerIcon(painter = painter)
+            RoundedCornerIcon(drawableRes = drawableRes)
         },
         backgroundColor = backgroundColor,
         border = border
@@ -302,7 +303,7 @@ fun ListItemPreview() {
         IconListItem(
             header = "No. Karyawan",
             subHeader = "NIK-1234566489",
-            painter = painterResource(R.drawable.ic_employee_id)
+            drawableRes = R.drawable.ic_employee_id
         )
     }
 }
@@ -313,7 +314,7 @@ fun ClickableListItemPreview() {
     AttendanceFirebaseTheme {
         IconListItem(
             header = "Logout",
-            painter = painterResource(R.drawable.ic_logout)
+            drawableRes = R.drawable.ic_logout
         )
     }
 }
