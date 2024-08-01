@@ -27,7 +27,7 @@ buildscript {
 
         paging_version = "3.2.1"
 
-        kotlin_serialization_version = "1.6.3"
+        kotlin_serialization_version = "1.6.0"
 
         accompanist_permission_version = "0.35.1-alpha"
 
