@@ -10,26 +10,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 import kotlinx.serialization.Serializable
 
 @Serializable
 object OnBoardingDestination : Destination
 
-fun NavController.navigateToOnBoarding(
-    builder: NavOptionsBuilder.() -> Unit = {}
-) {
-    this.navigate(OnBoardingDestination, navOptions(builder))
-}
-
-fun NavGraphBuilder.onBoardingScreen(
-    onButtonStartedClicked: () -> Unit,
-    enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+object OnBoardingScreenNavigation {
+    val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
         val slideTop = slideInVertically(
             animationSpec = tween(
                 durationMillis = 400,
@@ -47,8 +35,8 @@ fun NavGraphBuilder.onBoardingScreen(
         )
 
         slideTop + fadeIn
-    },
-    exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) = {
+    }
+    val exitTransition: (AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition) = {
         val slideToLeft = slideOutHorizontally(
             animationSpec = tween(
                 durationMillis = 400,
@@ -65,14 +53,5 @@ fun NavGraphBuilder.onBoardingScreen(
         )
 
         slideToLeft + fadeOut
-    }
-) {
-    composable<OnBoardingDestination>(
-        enterTransition = enterTransition,
-        exitTransition = exitTransition
-    ) {
-        OnBoardingScreen(
-            onButtonStartedClicked = onButtonStartedClicked,
-        )
     }
 }

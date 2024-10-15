@@ -8,18 +8,22 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.verindrarizya.attendancefirebase.core.data.state.AuthState
+import com.verindrarizya.attendancefirebase.ui.screens.authentication.GlobalAuthDestination
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.authGraph
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.navigateToGlobalAuth
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.RegisterDestination
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.dashboardScreen
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.navigateToDashboard
-import com.verindrarizya.attendancefirebase.ui.screens.onboarding.navigateToOnBoarding
-import com.verindrarizya.attendancefirebase.ui.screens.onboarding.onBoardingScreen
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.DashboardDestination
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.DashboardScreen
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.DashboardScreenNavigation
+import com.verindrarizya.attendancefirebase.ui.screens.onboarding.OnBoardingDestination
+import com.verindrarizya.attendancefirebase.ui.screens.onboarding.OnBoardingScreen
+import com.verindrarizya.attendancefirebase.ui.screens.onboarding.OnBoardingScreenNavigation
 import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingDestination
-import com.verindrarizya.attendancefirebase.ui.screens.preload.preloadingScreen
+import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingScreen
+import com.verindrarizya.attendancefirebase.ui.screens.preload.PreloadingScreenNavigation
 import kotlinx.coroutines.delay
 
 @Composable
@@ -37,18 +41,18 @@ fun AttendanceFirebaseScreen(
             // second -> AuthState
             if (data.second == AuthState.SignedIn) {
                 if (currentBackStack?.destination?.route != RegisterDestination::class.simpleName) {
-                    navController.navigateToDashboard {
+                    navController.navigate(DashboardDestination) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
             } else {
                 if (data.first) {
-                    navController.navigateToGlobalAuth {
+                    navController.navigate(GlobalAuthDestination) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
                 } else {
                     delay(3_000)
-                    navController.navigateToOnBoarding {
+                    navController.navigate(OnBoardingDestination) {
                         popUpTo(navController.graph.id) { inclusive = true }
                     }
                 }
@@ -61,13 +65,26 @@ fun AttendanceFirebaseScreen(
         navController = navController,
         startDestination = PreloadingDestination
     ) {
-        preloadingScreen()
-        onBoardingScreen(
-            onButtonStartedClicked = {
+        composable<PreloadingDestination>(
+            enterTransition = PreloadingScreenNavigation.enterTransition,
+            exitTransition = PreloadingScreenNavigation.exitTransition
+        ) {
+            PreloadingScreen()
+        }
+        composable<OnBoardingDestination>(
+            enterTransition = OnBoardingScreenNavigation.enterTransition,
+            exitTransition = OnBoardingScreenNavigation.exitTransition
+        ) {
+            OnBoardingScreen(onButtonStartedClicked = {
                 viewModel.setUserOnBoarded()
-            }
-        )
+            })
+        }
         authGraph(navController = navController)
-        dashboardScreen()
+        composable<DashboardDestination>(
+            enterTransition = DashboardScreenNavigation.enterTransition,
+            exitTransition = DashboardScreenNavigation.exitTransition
+        ) {
+            DashboardScreen()
+        }
     }
 }

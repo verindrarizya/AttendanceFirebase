@@ -17,13 +17,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.history.historyScreen
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.home.homeScreen
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile.profileScreen
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.history.HistoryDestination
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.history.HistoryScreen
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.home.HomeDestination
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.home.HomeScreen
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile.ProfileDestination
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.profile.ProfileScreen
 import com.verindrarizya.attendancefirebase.ui.theme.AttBlue
 import com.verindrarizya.attendancefirebase.ui.theme.AttendanceFirebaseTheme
 import com.verindrarizya.attendancefirebase.ui.theme.MontserratFamily
@@ -31,9 +34,9 @@ import com.verindrarizya.attendancefirebase.ui.theme.Whiteish
 
 @Composable
 fun DashboardScreen(
-    modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
+    modifier: Modifier = Modifier
 ) {
+    val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
@@ -59,9 +62,9 @@ fun DashboardScreen(
             navController = navController,
             startDestination = DashboardItemScreen.HomeScreen.route,
         ) {
-            homeScreen()
-            historyScreen()
-            profileScreen()
+            composable<HomeDestination> { HomeScreen() }
+            composable<HistoryDestination> { HistoryScreen() }
+            composable<ProfileDestination> { ProfileScreen() }
         }
     }
 }

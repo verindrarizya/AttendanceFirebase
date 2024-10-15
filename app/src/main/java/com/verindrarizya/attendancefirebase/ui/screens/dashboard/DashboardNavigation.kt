@@ -10,25 +10,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.compose.composable
-import androidx.navigation.navOptions
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 import kotlinx.serialization.Serializable
 
 @Serializable
 object DashboardDestination : Destination
 
-fun NavController.navigateToDashboard(
-    builder: NavOptionsBuilder.() -> Unit = {}
-) {
-    this.navigate(DashboardDestination, navOptions(builder))
-}
-
-fun NavGraphBuilder.dashboardScreen(
-    enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+object DashboardScreenNavigation {
+    val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
         val slideInLeft = slideInHorizontally(
             animationSpec = tween(
                 durationMillis = 400,
@@ -46,8 +35,8 @@ fun NavGraphBuilder.dashboardScreen(
         )
 
         slideInLeft + fadeIn
-    },
-    exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+    }
+    val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
         val slideOutRight = slideOutHorizontally(
             animationSpec = tween(
                 durationMillis = 400,
@@ -65,12 +54,5 @@ fun NavGraphBuilder.dashboardScreen(
         )
 
         slideOutRight + fadeOut
-    }
-) {
-    composable<DashboardDestination>(
-        enterTransition = enterTransition,
-        exitTransition = exitTransition
-    ) {
-        DashboardScreen()
     }
 }

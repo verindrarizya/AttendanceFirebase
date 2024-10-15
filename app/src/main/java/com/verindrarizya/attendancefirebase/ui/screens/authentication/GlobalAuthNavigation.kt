@@ -12,17 +12,14 @@ import androidx.compose.animation.slideOutVertically
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavOptionsBuilder
-import androidx.navigation.navOptions
+import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.LoginDestination
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.loginScreen
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.navigateToLogin
+import com.verindrarizya.attendancefirebase.ui.screens.authentication.login.LoginScreen
 import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.RegisterDestination
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.navigateToRegister
-import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.registerScreen
-import com.verindrarizya.attendancefirebase.ui.screens.dashboard.navigateToDashboard
+import com.verindrarizya.attendancefirebase.ui.screens.authentication.register.RegisterScreen
+import com.verindrarizya.attendancefirebase.ui.screens.dashboard.DashboardDestination
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -69,40 +66,38 @@ private object GlobalAuthNavigationAnimation {
     }
 }
 
-fun NavController.navigateToGlobalAuth(
-    builder: NavOptionsBuilder.() -> Unit = {}
-) {
-    this.navigate(GlobalAuthDestination, navOptions(builder))
-}
-
 fun NavGraphBuilder.authGraph(
     navController: NavController
 ) {
     navigation<GlobalAuthDestination>(
         startDestination = LoginDestination
     ) {
-        registerScreen(
-            onNavigateToLoginScreen = {
-                navController.navigateToLogin {
-                    popUpTo(RegisterDestination) { inclusive = true }
-                }
-            },
-            onNavigateToDashboardScreen = {
-                navController.navigateToDashboard {
-                    popUpTo(navController.graph.id) { inclusive = true }
-                }
-            },
+        composable<RegisterDestination>(
             enterTransition = GlobalAuthNavigationAnimation.enterTransition,
             exitTransition = GlobalAuthNavigationAnimation.exitTransition
-        )
-        loginScreen(
-            onNavigateToRegisterScreen = {
-                navController.navigateToRegister {
+        ) {
+            RegisterScreen(
+                onNavigateToLoginScreen = {
+                    navController.navigate(LoginDestination) {
+                        popUpTo(RegisterDestination) { inclusive = true }
+                    }
+                },
+                onNavigateToDashboardScreen = {
+                    navController.navigate(DashboardDestination) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
+            )
+        }
+        composable<LoginDestination>(
+            enterTransition = GlobalAuthNavigationAnimation.enterTransition,
+            exitTransition = GlobalAuthNavigationAnimation.exitTransition
+        ) {
+            LoginScreen(onNavigateToRegisterScreen = {
+                navController.navigate(RegisterDestination) {
                     popUpTo(LoginDestination) { inclusive = true }
                 }
-            },
-            enterTransition = GlobalAuthNavigationAnimation.enterTransition,
-            exitTransition = GlobalAuthNavigationAnimation.exitTransition
-        )
+            })
+        }
     }
 }

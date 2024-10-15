@@ -10,16 +10,14 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
 import com.verindrarizya.attendancefirebase.ui.navigation.Destination
 import kotlinx.serialization.Serializable
 
 @Serializable
 object PreloadingDestination : Destination
 
-fun NavGraphBuilder.preloadingScreen(
-    enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
+object PreloadingScreenNavigation {
+    val enterTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> EnterTransition = {
         val scaleIn = scaleIn(
             animationSpec = tween(
                 durationMillis = 300,
@@ -34,8 +32,9 @@ fun NavGraphBuilder.preloadingScreen(
         )
 
         scaleIn + fadeIn
-    },
-    exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
+    }
+
+    val exitTransition: AnimatedContentTransitionScope<NavBackStackEntry>.() -> ExitTransition = {
         val scaleOutContainer = scaleOut(
             animationSpec = tween(
                 durationMillis = 400,
@@ -52,12 +51,5 @@ fun NavGraphBuilder.preloadingScreen(
         )
 
         scaleOutContainer + fadeOut
-    }
-) {
-    composable<PreloadingDestination>(
-        enterTransition = enterTransition,
-        exitTransition = exitTransition
-    ) {
-        PreloadingScreen()
     }
 }

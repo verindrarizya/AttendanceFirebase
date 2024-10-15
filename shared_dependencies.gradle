@@ -3,8 +3,6 @@ dependencies {
     implementation platform("org.jetbrains.kotlin:kotlin-bom:$kotlin_bom_version")
     implementation platform("androidx.compose:compose-bom:$compose_bom_version")
 
-    // Paging
-    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     // Hilt
     implementation "com.google.dagger:hilt-android:$hilt_version"
 

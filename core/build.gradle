@@ -41,6 +41,9 @@ dependencies {
     // DataStore
     implementation "androidx.datastore:datastore-preferences:$datastore_version"
 
+    // Paging
+    implementation "androidx.paging:paging-common:$paging_version"
+
     // Firebase
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation "com.google.firebase:firebase-database-ktx"
