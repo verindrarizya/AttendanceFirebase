@@ -38,14 +38,15 @@ class LoginViewModel @Inject constructor(
     }
 
     fun login() {
-        loginUiState.value.apply {
-            viewModelScope.launch {
-                authRepository.login(email, password).collect {
-                    if (it is Resource.Error) {
-                        _message.emit(it.message)
-                    }
-                    _loginResource.value = it
+        viewModelScope.launch {
+            authRepository.login(
+                loginUiState.value.email,
+                loginUiState.value.password
+            ).collect {
+                if (it is Resource.Error) {
+                    _message.emit(it.message)
                 }
+                _loginResource.value = it
             }
         }
     }

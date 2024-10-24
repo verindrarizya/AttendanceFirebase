@@ -56,14 +56,16 @@ class RegisterViewModel @Inject constructor(
     }
 
     fun register() {
-        registerUiState.value.apply {
-            viewModelScope.launch {
-                authRepository.register(email, password, fullName).collect {
-                    if (it is Resource.Error) {
-                        _message.emit(it.message)
-                    }
-                    _registerResource.value = it
+        viewModelScope.launch {
+            authRepository.register(
+                registerUiState.value.email,
+                registerUiState.value.password,
+                registerUiState.value.fullName
+            ).collect {
+                if (it is Resource.Error) {
+                    _message.emit(it.message)
                 }
+                _registerResource.value = it
             }
         }
     }
